@@ -4,6 +4,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import HomeScreen from "../screens/HomeScreen"
 import Icons from "@expo/vector-icons/MaterialIcons"
 import CustomBottomTabs from "../components/CustomBottomTabs"
+import ProfileScreen from "../screens/Profile/ProfileScreen"
+import CartScreen from "../screens/Cart/CartScreen"
 
 const TabsStack = createBottomTabNavigator()
 
@@ -27,8 +29,9 @@ const TabsNavigator = () => {
       />
       <TabsStack.Screen
         name="Cart"
-        component={Example}
+        component={CartScreen}
         options={{
+          headerShown: false,
           tabBarIcon(props) {
             return <Icons name="shopping-cart" {...props} />
           }
@@ -45,8 +48,9 @@ const TabsNavigator = () => {
       />
       <TabsStack.Screen
         name="Profile"
-        component={Example}
+        component={ProfileScreen}
         options={{
+          headerShown: false,
           tabBarIcon(props) {
             return <Icons name="person" {...props} />
           }
