@@ -6,6 +6,7 @@ import Icons from "@expo/vector-icons/MaterialIcons"
 import CustomBottomTabs from "../components/CustomBottomTabs"
 import ProfileScreen from "../screens/Profile/ProfileScreen"
 import CartScreen from "../screens/Cart/CartScreen"
+import LoginScreen from "../screens/Login/LoginScreen"
 
 const TabsStack = createBottomTabNavigator()
 
@@ -39,7 +40,7 @@ const TabsNavigator = () => {
       />
       <TabsStack.Screen
         name="Payment"
-        component={Example}
+        component={LoginScreen}
         options={{
           tabBarIcon(props) {
             return <Icons name="account-balance-wallet" {...props} />

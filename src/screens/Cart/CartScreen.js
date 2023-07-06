@@ -4,14 +4,37 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COLOURS, Items } from '../../database/Database';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"
 import { SafeAreaView } from 'react-native-safe-area-context';
+import axios from 'axios';
 
 const CartScreen = ({ navigation }) => {
   const [product, setProduct] = useState();
-  const [total, setTotal] = useState(null)
+  const [total, setTotal] = useState(null);
+  const [data, setData] = useState(undefined);
+
+
   useEffect(() => {
-      getDataFromDB();
-  
+    getDataFromDB();
+    axios
+      .get("http://192.168.1.10:8080/category/")
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
+
+
+  //test callAPI
+  // const fetchAPI = async () => {
+  //   const url = "http://localhost:8080/category/";
+  //   axios({
+  //     method: "GET",
+  //     url: url,
+  //   })
+  //     .then((res) => console.log("api", res))
+  //     .catch((err) => console.log("error", err));
+  // };
 
   // get data from DB by ID
   const getDataFromDB = async () => {
@@ -72,7 +95,7 @@ const CartScreen = ({ navigation }) => {
   }
 
   const renderProduct = (data, index) => {
-    console.log('data', data);
+    // console.log('data', data);
     return (
       <TouchableOpacity
         key={data.id}
