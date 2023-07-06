@@ -188,7 +188,11 @@ const HomeScreen = ({ navigation }) => {
             >
               New Collections
             </Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Products");
+              }}
+            >
               <Text style={{ color: colors.primary }}>See All</Text>
             </TouchableOpacity>
           </View>

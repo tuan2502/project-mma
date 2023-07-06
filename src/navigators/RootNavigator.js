@@ -2,6 +2,7 @@ import React from "react"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import DetailsScreen from "../screens/DetailsScreen"
 import TabsNavigator from "./TabsNavigator"
+import ProductsScreen from "../screens/ProductList/ProductListScreen"
 
 const RootStack = createNativeStackNavigator()
 
@@ -18,6 +19,13 @@ const RootNavigator = () => {
       <RootStack.Screen
         name="Details"
         component={DetailsScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <RootStack.Screen
+        name="Products"
+        component={ProductsScreen}
         options={{
           headerShown: false
         }}
