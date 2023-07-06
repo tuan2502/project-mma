@@ -15,8 +15,9 @@ import {
   import MasonryList from "reanimated-masonry-list";
   import { BlurView } from "expo-blur";
   import { BottomSheetModal } from "@gorhom/bottom-sheet";
-  import CustomBackdrop from "../components/CustomBackdrop";
-  import FilterView from "../components/FilterView";
+  import CustomBackdrop from "../../components/CustomBackdrop";
+  import FilterView from "../../components/CustomBackdrop";
+  import {get, remove, post, put} from "../../utils/APICaller";
   const CATEGORIES = [
     "Clothing",
     "Shoes",
@@ -30,14 +31,26 @@ import {
     const [categoryIndex, setCategoryIndex] = useState(0);
     const [productData, setProductData] = useState([]);
     const bottomSheetModalRef = useRef(null);
-    const [isLoading, setLoading] = useState(true);
-    const url = "http://192.168.1.8:8080/"
+    //const [isLoading, setLoading] = useState(true);
+
+
+    // const url = "http://192.168.1.8:8080/"
+    // useEffect(() => {
+    //   fetch(url+"product/")
+    //     .then((resp) => resp.json())
+    //     .then((json) => setProductData(json.data))
+    //     .catch((error) => console.error(error))
+    //     // .finally(() => setLoading(false));
+    // }, []);
     useEffect(() => {
-      fetch(url+"product/")
-        .then((resp) => resp.json())
-        .then((json) => setProductData(json.data))
-        .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
+      get({ endpoint: `/product/`})
+        .then((response) => {
+          setProductData(response.data['data']);
+          console.log("List nay:",productData);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
     }, []);
     const openFilterModal = useCallback(() => {
       bottomSheetModalRef.current?.present();
@@ -169,10 +182,12 @@ import {
               );
             }}
           />
-          {isLoading ? (
+          {/* {isLoading ? (
             <ActivityIndicator />
           ) : (
-            <MasonryList
+            
+          )} */}
+          <MasonryList
               data={productData}
               numColumns={2}
               contentContainerStyle={{ paddingHorizontal: 12 }}
@@ -281,7 +296,6 @@ import {
               )}
               onEndReachedThreshold={0.1}
             />
-          )}
         </SafeAreaView>
   
         <BottomSheetModal
