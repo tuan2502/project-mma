@@ -100,13 +100,13 @@ const HomeScreen = ({ navigation }) => {
               }}
               numberOfLines={1}
             >
-              Hi, James 👋
+              Welcome Back 👋
             </Text>
             <Text
               style={{ color: colors.text, opacity: 0.75 }}
               numberOfLines={1}
             >
-              Discover fashion that suit your style
+              Discover gift that suit your style
             </Text>
           </View>
           <TouchableOpacity
