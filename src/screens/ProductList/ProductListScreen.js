@@ -1,3 +1,4 @@
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,7 +10,6 @@ import {
   ActivityIndicator,
   TextInput,
 } from "react-native";
-import React, { useCallback, useRef, useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import Icons from "@expo/vector-icons/MaterialIcons";
@@ -18,53 +18,65 @@ import { BlurView } from "expo-blur";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import CustomBackdrop from "../../components/CustomBackdrop";
 import FilterView from "../../components/CustomBackdrop";
-import { get, remove, post, put } from "../../utils/APICaller";
-const CATEGORIES = [
-  "Clothing",
-  "Shoes",
-  "Accessories",
-  "Accessories 2",
-  "Accessories 3",
-  "Accessories 4",
-];
+import { get } from "../../utils/APICaller";
+
 const ProductsScreen = ({ navigation }) => {
   const { colors } = useTheme();
-  const [categoryIndex, setCategoryIndex] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [productData, setProductData] = useState([]);
   const bottomSheetModalRef = useRef(null);
   const [isLoading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [filteredProductData, setFilteredProductData] = useState([]);
 
-  const handleSearch = useCallback(() => {
-    if (searchText === "") {
-      setFilteredProductData(productData);
-    } else {
-      const filteredData = productData.filter((item) =>
-        item.name.toLowerCase().includes(searchText.toLowerCase())
-      );
-      setFilteredProductData(filteredData);
-    }
-  }, [searchText, productData]);
-
   useEffect(() => {
-    handleSearch();
-  }, [handleSearch, searchText]);
-
-  useEffect(() => {
-    get({ endpoint: `/product/` })
+    get({ endpoint: "/category/" })
       .then((response) => {
-        setProductData(response.data["data"]);
-        console.log("List nay:", productData);
+        setCategories(response.data["data"]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    get({ endpoint: "/product/" })
+      .then((response) => {
+        const products = response.data["data"];
+        setProductData(products);
+        setFilteredProductData(products);
       })
       .catch((error) => {
         console.log(error);
       })
       .finally(() => setLoading(false));
   }, []);
-  const openFilterModal = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
+
+  const handleSearch = useCallback(() => {
+    const filteredData = productData.filter((item) => {
+      const categoryMatch =
+        selectedCategory === null ||
+        selectedCategory === "" ||
+        item.Category.catename === selectedCategory;
+      const nameMatch =
+        item.name.toLowerCase().includes(searchText.toLowerCase());
+
+      return categoryMatch && nameMatch;
+    });
+
+    setFilteredProductData(filteredData);
+  }, [productData, selectedCategory, searchText]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [handleSearch]);
+
+  const setCategoryIndex = (index) => {
+    const selectedCategory = categories[index]?.catename || null;
+    setSelectedCategory(selectedCategory);
+    setSearchText("");
+  };
 
   return (
     <ScrollView>
@@ -140,25 +152,11 @@ const ProductsScreen = ({ navigation }) => {
               onChangeText={(text) => setSearchText(text)}
             />
           </TouchableOpacity>
-
-          {/* <TouchableOpacity
-            onPress={openFilterModal}
-            style={{
-              width: 52,
-              aspectRatio: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 52,
-              backgroundColor: colors.primary,
-            }}
-          >
-            <Icons name="tune" size={24} color={colors.background} />
-          </TouchableOpacity> */}
         </View>
 
         {/* Categories Section */}
         <FlatList
-          data={CATEGORIES}
+          data={categories}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
@@ -166,7 +164,7 @@ const ProductsScreen = ({ navigation }) => {
             gap: 12,
           }}
           renderItem={({ item, index }) => {
-            const isSelected = categoryIndex === index;
+            const isSelected = item.catename === selectedCategory;
             return (
               <TouchableOpacity
                 onPress={() => setCategoryIndex(index)}
@@ -187,7 +185,7 @@ const ProductsScreen = ({ navigation }) => {
                     opacity: isSelected ? 1 : 0.5,
                   }}
                 >
-                  {item}
+                  {item.catename}
                 </Text>
               </TouchableOpacity>
             );
@@ -197,7 +195,7 @@ const ProductsScreen = ({ navigation }) => {
           <ActivityIndicator />
         ) : (
           <MasonryList
-            data={searchText ? filteredProductData : productData}
+            data={filteredProductData}
             numColumns={2}
             contentContainerStyle={{ paddingHorizontal: 12 }}
             showsVerticalScrollIndicator={false}
@@ -244,63 +242,63 @@ const ProductsScreen = ({ navigation }) => {
                         {item.name}
                       </Text>
                       <View
-                        style={{
-                          backgroundColor: colors.card,
-                          borderRadius: 100,
-                          height: 32,
-                          aspectRatio: 1,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Icons
-                          name="favorite-border"
-                          size={20}
-                          color={colors.text}
-                        />
-                      </View>
-                    </View>
-                    <View style={{ flex: 1 }} />
-                    <BlurView
                       style={{
-                        flexDirection: "row",
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        alignItems: "center",
-                        padding: 6,
+                        backgroundColor: colors.card,
                         borderRadius: 100,
-                        overflow: "hidden",
+                        height: 32,
+                        aspectRatio: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
-                      intensity={20}
                     >
-                      <Text
-                        style={{
-                          flex: 1,
-                          fontSize: 16,
-                          fontWeight: "600",
-                          color: "#fff",
-                          marginLeft: 8,
-                        }}
-                        numberOfLines={1}
-                      >
-                        ${item.price}
-                      </Text>
-                      <TouchableOpacity
-                        style={{
-                          paddingHorizontal: 12,
-                          paddingVertical: 8,
-                          borderRadius: 100,
-                          backgroundColor: "#fff",
-                        }}
-                      >
-                        <Icons
-                          name="add-shopping-cart"
-                          size={18}
-                          color="#000"
-                        />
-                      </TouchableOpacity>
-                    </BlurView>
+                      <Icons
+                        name="favorite-border"
+                        size={20}
+                        color={colors.text}
+                      />
+                    </View>
                   </View>
+                  <View style={{ flex: 1 }} />
+                  <BlurView
+                    style={{
+                      flexDirection: "row",
+                      backgroundColor: "rgba(0,0,0,0.5)",
+                      alignItems: "center",
+                      padding: 6,
+                      borderRadius: 100,
+                      overflow: "hidden",
+                    }}
+                    intensity={20}
+                  >
+                    <Text
+                      style={{
+                        flex: 1,
+                        fontSize: 16,
+                        fontWeight: "600",
+                        color: "#fff",
+                        marginLeft: 8,
+                      }}
+                      numberOfLines={1}
+                    >
+                      ${item.price}
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        borderRadius: 100,
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      <Icons
+                        name="add-shopping-cart"
+                        size={18}
+                        color="#000"
+                      />
+                    </TouchableOpacity>
+                  </BlurView>
                 </View>
+              </View>
               </View>
             )}
             onEndReachedThreshold={0.1}
@@ -308,21 +306,7 @@ const ProductsScreen = ({ navigation }) => {
         )}
       </SafeAreaView>
 
-      <BottomSheetModal
-        snapPoints={["85%"]}
-        index={0}
-        ref={bottomSheetModalRef}
-        backdropComponent={(props) => <CustomBackdrop {...props} />}
-        backgroundStyle={{
-          borderRadius: 24,
-          backgroundColor: colors.card,
-        }}
-        handleIndicatorStyle={{
-          backgroundColor: colors.primary,
-        }}
-      >
-        <FilterView />
-      </BottomSheetModal>
+      
     </ScrollView>
   );
 };
