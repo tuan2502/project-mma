@@ -4,8 +4,8 @@ import LocalStorageUtils from "./LocalStorageUtils";
 
 export const getHeaders = () => {
   return {
-    "Content-Type": "multipart/form-data",
-    Accept: "application/json",
+    "Content-Type": "application/json",
+    Accept: "*/*",
     Authorization: `Bearer ${LocalStorageUtils.getToken()}`,
   };
 };

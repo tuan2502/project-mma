@@ -1,5 +1,4 @@
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -13,20 +12,41 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { post } from "../../utils/APICaller";
 
 export const RegisterScreen = () => {
-  const emailInput = React.useRef(null);
-  const passwordInput = React.useRef(null);
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const [usernameInput, setUsername] = useState("");
+  const [passwordInput, setPassword] = useState("");
+  const [fullnameInput, setName] = useState("");
 
-  const onSubmit = handleSubmit(({ email, password }) => {
-    Alert.alert("Data", `Email: ${email}\nPassword: ${password}`);
-  });
+  const handleUsername = (event) => {
+    setUsername(event.nativeEvent.text);
+  };
+  const handleFullname = (event) => {
+    setName(event.nativeEvent.text);
+  };
+  const handlePassword = (event) => {
+    setPassword(event.nativeEvent.text);
+  };
+
+  const handleSubmit = () => {
+    console.log(fullnameInput, usernameInput, passwordInput);
+    post({
+      endpoint: `/signup`,
+      body: {
+        fullname: fullnameInput,
+        username: usernameInput,
+        password: passwordInput,
+        role: "customer",
+      },
+    })
+      .then((response) => {
+        alert(`Registed sucessfully!!!`);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -42,91 +62,53 @@ export const RegisterScreen = () => {
 
             <View style={{ marginBottom: 16 }} />
 
-            <Pressable onPress={() => emailInput.current?.focus()}>
-              <View style={styles.form}>
-                <Text style={styles.label}>Full Name:</Text>
-
-                <Controller
-                  control={control}
-                  name="fullname"
-                  render={({ onBlur, onChange, value }) => (
-                    <TextInput
-                      autoCapitalize="none"
-                      autoCompleteType="fullname"
-                      autoCorrect={false}
-                      keyboardType="default"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      onSubmitEditing={() => passwordInput.current?.focus()}
-                      ref={emailInput}
-                      returnKeyType="next"
-                      style={styles.textInput}
-                      textContentType="name"
-                      value={value}
-                    />
-                  )}
-                />
-              </View>
-            </Pressable>
+            <View style={styles.form}>
+              <Text style={styles.label}>Full Name:</Text>
+              <TextInput
+                autoCapitalize="none"
+                autoCompleteType="fullname"
+                autoCorrect={false}
+                keyboardType="default"
+                onChange={handleFullname}
+                onSubmitEditing={handleSubmit}
+                returnKeyType="next"
+                style={styles.textInput}
+                textContentType="name"
+              />
+            </View>
             <View style={{ marginBottom: 20 }} />
-
-            <Pressable onPress={() => passwordInput.current?.focus()}>
-              <View style={styles.form}>
-                <Text style={styles.label}>Username:</Text>
-
-                <Controller
-                  control={control}
-                  name="username"
-                  render={({ onBlur, onChange, value }) => (
-                    <TextInput
-                      autoCapitalize="none"
-                      autoCompleteType="username"
-                      autoCorrect={false}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      onSubmitEditing={onSubmit}
-                      ref={passwordInput}
-                      returnKeyType="next"
-                      secureTextEntry
-                      style={styles.textInput}
-                      textContentType="username"
-                      value={value}
-                    />
-                  )}
-                />
-              </View>
-            </Pressable>
+            <View style={styles.form}>
+              <Text style={styles.label}>Username:</Text>
+              <TextInput
+                autoCapitalize="none"
+                autoCompleteType="username"
+                autoCorrect={false}
+                onChange={handleUsername}
+                onSubmitEditing={handleSubmit}
+                returnKeyType="next"
+                style={styles.textInput}
+                textContentType="username"
+              />
+            </View>
 
             <View style={{ marginBottom: 20 }} />
-            <Pressable onPress={() => passwordInput.current?.focus()}>
-              <View style={styles.form}>
-                <Text style={styles.label}>Password:</Text>
-
-                <Controller
-                  control={control}
-                  name="password"
-                  render={({ onBlur, onChange, value }) => (
-                    <TextInput
-                      autoCapitalize="none"
-                      autoCompleteType="password"
-                      autoCorrect={false}
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      onSubmitEditing={onSubmit}
-                      ref={passwordInput}
-                      returnKeyType="done"
-                      secureTextEntry
-                      style={styles.textInput}
-                      textContentType="password"
-                      value={value}
-                    />
-                  )}
-                />
-              </View>
-            </Pressable>
+            <View style={styles.form}>
+              <Text style={styles.label}>Password:</Text>
+              <TextInput
+                autoCapitalize="none"
+                autoCompleteType="password"
+                autoCorrect={false}
+                onChange={handlePassword}
+                onSubmitEditing={handleSubmit}
+                returnKeyType="done"
+                secureTextEntry
+                style={styles.textInput}
+                textContentType="password"
+              />
+            </View>
 
             <View style={{ marginBottom: 20 }} />
-            <TouchableOpacity onPress={onSubmit}>
+            <TouchableOpacity onPress={handleSubmit}>
               <View style={styles.button}>
                 <Text style={styles.buttonTitle}>Register</Text>
               </View>
