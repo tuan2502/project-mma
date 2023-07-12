@@ -30,37 +30,7 @@ const CartScreen = ({ navigation }) => {
       });
   }, []);
 
-  //test callAPI
-  // const fetchAPI = async () => {
-  //   const url = "http://localhost:8080/category/";
-  //   axios({
-  //     method: "GET",
-  //     url: url,
-  //   })
-  //     .then((res) => console.log("api", res))
-  //     .catch((err) => console.log("error", err));
-  // };
-
-  // get data from DB by ID
   const getDataFromDB = async () => {
-    // let items = await AsyncStorage.getItem('cartItems');
-    // items = JSON.parse(items);
-    // let productData = [];
-    // if (items) {
-    //   Items.forEach(data => {
-    //     if (items.includes(data.id)) {
-    //       productData.push(data);
-    //       return;
-    //     }
-    //   })
-    //   setProduct(productData);
-    //   console.log('Item', product);
-
-    //   getTotal(productData);
-    // } else {
-    //   setProduct(false);
-    //   getTotal(false);
-    // }
     setProduct(Items);
   };
 

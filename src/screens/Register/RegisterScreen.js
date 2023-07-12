@@ -38,6 +38,10 @@ export const RegisterScreen = () => {
         password: passwordInput,
         role: "customer",
       },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "*/*",
+      },
     })
       .then((response) => {
         alert(`Registed sucessfully!!!`);
