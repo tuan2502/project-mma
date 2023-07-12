@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -12,29 +11,40 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-// Modules
-import { Controller, useForm } from "react-hook-form";
-// Components
+import { post } from "../../utils/APICaller";
 
 const SizeBox = ({ height }) => {
   return <View style={{ marginBottom: height }}></View>;
 };
 
 const LoginScreen = () => {
-  const emailInput = React.useRef(null);
-  const passwordInput = React.useRef(null);
+  const [usernameInput, setUsername] = useState("");
+  const [passwordInput, setPassword] = useState("");
 
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  const handleUsername = (event) => {
+    setUsername(event.nativeEvent.text);
+  };
+  const handlePassword = (event) => {
+    setPassword(event.nativeEvent.text);
+  };
 
-  const onSubmit = handleSubmit(({ email, password }) => {
-    Alert.alert("Data", `Email: ${email}\nPassword: ${password}`);
-  });
-
+  const handleSubmit = () => {
+    console.log(usernameInput, passwordInput);
+    post({
+      endpoint: `/login`,
+      body: {
+        username: usernameInput,
+        password: passwordInput,
+        role: "customer",
+      },
+    })
+      .then((response) => {
+        alert(`Login sucessfully!!!`);
+      })
+      .catch((error) => {
+        alert(`Something went wrong, you should check again`);
+      });
+  };
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safeAreaView}>
@@ -48,61 +58,36 @@ const LoginScreen = () => {
 
           <SizeBox height={16} />
 
-          <Pressable onPress={() => emailInput.current?.focus()}>
-            <View style={styles.form}>
-              <Text style={styles.label}>Email:</Text>
+          <View style={{ marginBottom: 20 }} />
+          <View style={styles.form}>
+            <Text style={styles.label}>Username:</Text>
+            <TextInput
+              autoCapitalize="none"
+              autoCompleteType="username"
+              autoCorrect={false}
+              onChange={handleUsername}
+              onSubmitEditing={handleSubmit}
+              returnKeyType="next"
+              style={styles.textInput}
+              textContentType="username"
+            />
+          </View>
 
-              <Controller
-                control={control}
-                name="email"
-                render={({ onBlur, onChange, value }) => (
-                  <TextInput
-                    autoCapitalize="none"
-                    autoCompleteType="email"
-                    autoCorrect={false}
-                    keyboardType="email-address"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    onSubmitEditing={() => passwordInput.current?.focus()}
-                    ref={emailInput}
-                    returnKeyType="next"
-                    style={styles.textInput}
-                    textContentType="username"
-                    value={value}
-                  />
-                )}
-              />
-            </View>
-          </Pressable>
-
-          <SizeBox height={16} />
-
-          <Pressable onPress={() => passwordInput.current?.focus()}>
-            <View style={styles.form}>
-              <Text style={styles.label}>Password:</Text>
-
-              <Controller
-                control={control}
-                name="password"
-                render={({ onBlur, onChange, value }) => (
-                  <TextInput
-                    autoCapitalize="none"
-                    autoCompleteType="password"
-                    autoCorrect={false}
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    onSubmitEditing={onSubmit}
-                    ref={passwordInput}
-                    returnKeyType="done"
-                    secureTextEntry
-                    style={styles.textInput}
-                    textContentType="password"
-                    value={value}
-                  />
-                )}
-              />
-            </View>
-          </Pressable>
+          <View style={{ marginBottom: 20 }} />
+          <View style={styles.form}>
+            <Text style={styles.label}>Password:</Text>
+            <TextInput
+              autoCapitalize="none"
+              autoCompleteType="password"
+              autoCorrect={false}
+              onChange={handlePassword}
+              onSubmitEditing={handleSubmit}
+              returnKeyType="done"
+              secureTextEntry
+              style={styles.textInput}
+              textContentType="password"
+            />
+          </View>
 
           <SizeBox height={16} />
 
@@ -111,7 +96,7 @@ const LoginScreen = () => {
           </View>
           <SizeBox height={16} />
 
-          <TouchableOpacity onPress={onSubmit}>
+          <TouchableOpacity onPress={handleSubmit}>
             <View style={styles.button}>
               <Text style={styles.buttonTitle}>Sign In</Text>
             </View>
