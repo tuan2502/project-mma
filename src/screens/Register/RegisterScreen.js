@@ -44,7 +44,7 @@ export const RegisterScreen = () => {
         alert(`Registed sucessfully!!!`);
       })
       .catch((error) => {
-        console.log(error);
+        alert(`Something went wrong, you should check again`);
       });
   };
 
