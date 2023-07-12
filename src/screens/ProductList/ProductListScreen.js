@@ -15,9 +15,6 @@ import { useTheme } from "@react-navigation/native";
 import Icons from "@expo/vector-icons/MaterialIcons";
 import MasonryList from "reanimated-masonry-list";
 import { BlurView } from "expo-blur";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import CustomBackdrop from "../../components/CustomBackdrop";
-import FilterView from "../../components/CustomBackdrop";
 import { get } from "../../utils/APICaller";
 
 const ProductsScreen = ({ navigation }) => {
@@ -25,7 +22,6 @@ const ProductsScreen = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [productData, setProductData] = useState([]);
-  const bottomSheetModalRef = useRef(null);
   const [isLoading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
   const [filteredProductData, setFilteredProductData] = useState([]);
