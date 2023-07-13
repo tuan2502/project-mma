@@ -1,5 +1,5 @@
 const config = {
-  APP_API_URL: "http://192.168.1.8:8080",
+  APP_API_URL: "http://192.168.0.156:8080",
   LOCALSTORAGE_TOKEN_NAME: "token",
 };
 

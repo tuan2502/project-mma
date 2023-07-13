@@ -30,12 +30,12 @@ const TabsNavigator = () => {
         }}
       />
       <TabsStack.Screen
-        name="Cart"
-        component={CartScreen}
+        name="Notifications"
+        component={Example}
         options={{
           headerShown: false,
           tabBarIcon(props) {
-            return <Icons name="shopping-cart" {...props} />;
+            return <Icons name="notifications" {...props} />;
           },
         }}
       />

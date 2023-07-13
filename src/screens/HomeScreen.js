@@ -110,6 +110,7 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </View>
           <TouchableOpacity
+            onPress={() => navigation.navigate('Cart')}
             style={{
               width: 52,
               aspectRatio: 1,
@@ -120,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
               borderColor: colors.border
             }}
           >
-            <Icons name="notifications" size={24} color={colors.text} />
+            <Icons name="shopping-cart" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
 

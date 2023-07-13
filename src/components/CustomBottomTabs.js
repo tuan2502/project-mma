@@ -68,8 +68,8 @@ const TabItem = ({ routeName, isActive, navigation }) => {
           name={
             routeName === "Home"
               ? "home"
-              : routeName === "Cart"
-              ? "shopping-cart"
+              : routeName === "Notifications"
+              ? "notifications"
               : routeName === "Payment"
               ? "account-balance-wallet"
               : "person"

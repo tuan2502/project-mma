@@ -9,6 +9,9 @@ import {
   FlatList,
   ActivityIndicator,
   TextInput,
+  ToastAndroid,
+  Alert,
+  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
@@ -19,6 +22,7 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import CustomBackdrop from "../../components/CustomBackdrop";
 import FilterView from "../../components/CustomBackdrop";
 import { get } from "../../utils/APICaller";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProductsScreen = ({ navigation }) => {
   const { colors } = useTheme();
@@ -59,8 +63,9 @@ const ProductsScreen = ({ navigation }) => {
         selectedCategory === null ||
         selectedCategory === "" ||
         item.Category.catename === selectedCategory;
-      const nameMatch =
-        item.name.toLowerCase().includes(searchText.toLowerCase());
+      const nameMatch = item.name
+        .toLowerCase()
+        .includes(searchText.toLowerCase());
 
       return categoryMatch && nameMatch;
     });
@@ -78,6 +83,76 @@ const ProductsScreen = ({ navigation }) => {
     setSearchText("");
   };
 
+  //tạo một card
+
+  //thêm sản phẩm vào Cart
+  const addToCart = async (id) => {
+    // let itemArray = await AsyncStorage.getItem("cartItems");
+    // itemArray = JSON.parse(itemArray);
+    // if (itemArray) {
+    //   let array = itemArray;
+    //   let isProductExist = false; // Biến cờ kiểm tra sản phẩm đã tồn tại trong giỏ hàng
+      
+    //   // Kiểm tra sản phẩm đã tồn tại trong giỏ hàng hay chưa
+    //   for (let i = 0; i < array.length; i++) {
+    //     if (array[i] === id) {
+    //       isProductExist = true;
+    //       break;
+    //     }
+    //   }
+    //   // Nếu sản phẩm đã tồn tại, hiển thị thông báo
+    //   if (isProductExist) {
+    //     if (Platform.OS === "android") {
+    //       ToastAndroid.show(
+    //         "Product exist in cart",
+    //         ToastAndroid.SHORT
+    //       );
+    //     } else if (Platform.OS === "ios") {
+    //       // Thông báo cho iOS
+    //       Alert.alert("Product exist in cart");
+    //     }
+    //     return;
+    //   } else {
+    //     array.push(id);
+    //   }
+  
+    //   try {
+    //     await AsyncStorage.setItem("cartItems", JSON.stringify(array));
+    //     if (Platform.OS === "android") {
+    //       ToastAndroid.show(
+    //         "Item Added Successfully to cart",
+    //         ToastAndroid.SHORT
+    //       );
+    //     } else if (Platform.OS === "ios") {
+    //       // Thông báo cho iOS
+    //       Alert.alert("Item Added Successfully to cart");
+    //     }
+    //   } catch (error) {
+    //     return error;
+    //   }
+    // } else {
+    //   let array = [];
+    //   array.push(id);
+    //   try {
+    //     await AsyncStorage.setItem("cartItems", JSON.stringify(array));
+    //     if (Platform.OS === "android") {
+    //       ToastAndroid.show(
+    //         "Item Added Successfully to cart",
+    //         ToastAndroid.SHORT
+    //       );
+    //     } else if (Platform.OS === "ios") {
+    //       // Thông báo cho iOS
+    //       Alert.alert('Item Added Successfully to cart');
+    //     }
+    //     // navigation.navigate("Home");
+    //     console.log("successfully added");
+    //   } catch (error) {
+    //     return error;
+    //   }
+    // }
+    await AsyncStorage.removeItem("cartItems");
+  };
+  
   return (
     <ScrollView>
       <SafeAreaView style={{ paddingVertical: 24, gap: 24 }}>
@@ -106,6 +181,7 @@ const ProductsScreen = ({ navigation }) => {
           </TouchableOpacity>
           <View style={{ flex: 1 }} />
           <TouchableOpacity
+            onPress={() => navigation.navigate("Cart")}
             style={{
               width: 52,
               aspectRatio: 1,
@@ -242,71 +318,72 @@ const ProductsScreen = ({ navigation }) => {
                         {item.name}
                       </Text>
                       <View
-                      style={{
-                        backgroundColor: colors.card,
-                        borderRadius: 100,
-                        height: 32,
-                        aspectRatio: 1,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Icons
-                        name="favorite-border"
-                        size={20}
-                        color={colors.text}
-                      />
+                        style={{
+                          backgroundColor: colors.card,
+                          borderRadius: 100,
+                          height: 32,
+                          aspectRatio: 1,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Icons
+                          name="favorite-border"
+                          size={20}
+                          color={colors.text}
+                        />
+                      </View>
                     </View>
-                  </View>
-                  <View style={{ flex: 1 }} />
-                  <BlurView
-                    style={{
-                      flexDirection: "row",
-                      backgroundColor: "rgba(0,0,0,0.5)",
-                      alignItems: "center",
-                      padding: 6,
-                      borderRadius: 100,
-                      overflow: "hidden",
-                    }}
-                    intensity={20}
-                  >
-                    <Text
+                    <View style={{ flex: 1 }} />
+                    <BlurView
                       style={{
-                        flex: 1,
-                        fontSize: 16,
-                        fontWeight: "600",
-                        color: "#fff",
-                        marginLeft: 8,
-                      }}
-                      numberOfLines={1}
-                    >
-                      ${item.price}
-                    </Text>
-                    <TouchableOpacity
-                      style={{
-                        paddingHorizontal: 12,
-                        paddingVertical: 8,
+                        flexDirection: "row",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        alignItems: "center",
+                        padding: 6,
                         borderRadius: 100,
-                        backgroundColor: "#fff",
+                        overflow: "hidden",
                       }}
+                      intensity={20}
                     >
-                      <Icons
-                        name="add-shopping-cart"
-                        size={18}
-                        color="#000"
-                      />
-                    </TouchableOpacity>
-                  </BlurView>
+                      <Text
+                        style={{
+                          flex: 1,
+                          fontSize: 16,
+                          fontWeight: "600",
+                          color: "#fff",
+                          marginLeft: 8,
+                        }}
+                        numberOfLines={1}
+                      >
+                        ${item.price}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => {
+                          addToCart(item.productid);
+                        }}
+                        style={{
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          borderRadius: 100,
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <Icons
+                          name="add-shopping-cart"
+                          size={18}
+                          color="#000"
+                        />
+                      </TouchableOpacity>
+                    </BlurView>
+                  </View>
                 </View>
-              </View>
               </View>
             )}
             onEndReachedThreshold={0.1}
           />
         )}
       </SafeAreaView>
-
-      
     </ScrollView>
   );
 };

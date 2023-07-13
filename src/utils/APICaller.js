@@ -3,6 +3,7 @@ import { APP_API_URL } from "../config";
 import LocalStorageUtils from "./LocalStorageUtils";
 
 export const getHeaders = () => {
+  console.log(LocalStorageUtils.getToken());
   return {
     "Content-Type": "multipart/form-data",
     Accept: "application/json",

@@ -6,15 +6,43 @@ import {
   NavigationContainer
 } from "@react-navigation/native"
 import RootNavigator from "./src/navigators/RootNavigator"
-import { useMemo } from "react"
+import { useEffect, useMemo } from "react"
 import "react-native-gesture-handler"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { SafeAreaProvider } from "react-native-safe-area-context"
+import { post } from "./src/utils/APICaller"
 
 export default function App() {
-  const colorScheme = useColorScheme()
 
+  const colorScheme = useColorScheme()
+  
+  useEffect(() => {
+    createCart()
+      console.log('hello')
+  }, []);
+
+  const createCart = async () => {
+    await post({
+      endpoint: "/order/",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "/",
+      },
+      body: { customerid: "4f639884-3ecb-470b-a785-788c73" },
+    })
+      .then((response) => {
+        const data = response.data["data"];
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log(error['message']);
+      });
+  };
+  
+  
+  
   const theme = useMemo(
     () =>
       colorScheme === "dark"
