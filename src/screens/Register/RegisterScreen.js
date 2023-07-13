@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { post } from "../../utils/APICaller";
 
-export const RegisterScreen = () => {
+const RegisterScreen = () => {
   const [usernameInput, setUsername] = useState("");
   const [passwordInput, setPassword] = useState("");
   const [fullnameInput, setName] = useState("");
@@ -29,7 +29,6 @@ export const RegisterScreen = () => {
   };
 
   const handleSubmit = () => {
-    console.log(fullnameInput, usernameInput, passwordInput);
     post({
       endpoint: `/signup`,
       body: {
@@ -37,10 +36,6 @@ export const RegisterScreen = () => {
         username: usernameInput,
         password: passwordInput,
         role: "customer",
-      },
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*",
       },
     })
       .then((response) => {
@@ -122,6 +117,8 @@ export const RegisterScreen = () => {
     </TouchableWithoutFeedback>
   );
 };
+
+export default RegisterScreen;
 
 const styles = StyleSheet.create({
   root: {

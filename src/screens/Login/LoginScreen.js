@@ -37,10 +37,6 @@ const LoginScreen = () => {
         password: passwordInput,
         role: "customer",
       },
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "*/*",
-      },
     })
       .then((response) => {
         alert(`Login sucessfully!!!`);

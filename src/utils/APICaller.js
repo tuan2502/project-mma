@@ -30,7 +30,12 @@ export const get = ({ endpoint, params = {}, headers = {} }) => {
   return request(endpoint, "GET", headers, params);
 };
 
-export function post({ endpoint, body = {}, params = {}, headers = {} }) {
+export function post({
+  endpoint,
+  body = {},
+  params = {},
+  headers = { "Content-Type": "application/json", Accept: "*/*" },
+}) {
   return request(endpoint, "POST", headers, params, body);
 }
 
