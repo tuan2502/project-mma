@@ -10,8 +10,11 @@ import {
   Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={{ flex: 1 }}>
       <StatusBar barStyle={"light-content"} backgroundColor="#212121" />
@@ -155,6 +158,11 @@ const ProfileScreen = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "pending",
+                });
+              }}
             >
               <Icon name="wallet" size={25} />
               <Text marginTop={10}>Pending</Text>
@@ -165,15 +173,25 @@ const ProfileScreen = () => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "packaging",
+                });
+              }}
             >
               <Icon name="box" size={25} />
-              <Text marginTop={10}>Packing</Text>
+              <Text marginTop={10}>Packaging</Text>
             </Pressable>
             <Pressable
               style={{
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+              }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "delivering",
+                });
               }}
             >
               <Icon name="truck" size={25} />
@@ -184,6 +202,11 @@ const ProfileScreen = () => {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+              }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "pending",
+                });
               }}
             >
               <Icon name="angle-right" size={25} />

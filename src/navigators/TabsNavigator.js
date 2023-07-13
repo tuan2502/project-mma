@@ -7,7 +7,7 @@ import CustomBottomTabs from "../components/CustomBottomTabs";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import LoginScreen from "../screens/Login/LoginScreen";
-import { RegisterScreen } from "../screens/Register/RegisterScreen";
+import RegisterScreen from "../screens/Register/RegisterScreen";
 
 const TabsStack = createBottomTabNavigator();
 
