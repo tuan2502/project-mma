@@ -5,7 +5,7 @@ import LocalStorageUtils from "./LocalStorageUtils";
 export const getHeaders = () => {
   console.log(LocalStorageUtils.getToken());
   return {
-    "Content-Type": "multipart/form-data",
+    "Content-Type": "multipart/form-data ",
     Accept: "application/json",
     Authorization: `Bearer ${LocalStorageUtils.getToken()}`,
   };
@@ -31,7 +31,12 @@ export const get = ({ endpoint, params = {}, headers = {} }) => {
   return request(endpoint, "GET", headers, params);
 };
 
-export function post({ endpoint, body = {}, params = {}, headers = {} }) {
+export function post({
+  endpoint,
+  body = {},
+  params = {},
+  headers = { "Content-Type": "application/json", Accept: "*/*" },
+}) {
   return request(endpoint, "POST", headers, params, body);
 }
 
