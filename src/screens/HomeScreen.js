@@ -50,7 +50,8 @@ const HomeScreen = ({ navigation }) => {
         setCategories(response.data["data"]);
       })
       .catch((error) => {
-        console.log(error);
+        console.log('2',error);
+
       });
   }, []);
 
@@ -72,6 +73,7 @@ const HomeScreen = ({ navigation }) => {
       })
       .catch((error) => {
         console.log(error);
+        console.log('3',error);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -95,7 +97,7 @@ const HomeScreen = ({ navigation }) => {
                 latestItem.orderid.toString()
               );
             } catch (e) {
-              console.log(error);
+              console.log('4',error);
               return null;
             }
             return;
@@ -107,7 +109,7 @@ const HomeScreen = ({ navigation }) => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log('5',error);
         return null;
       });
   };
@@ -124,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
         return data;
       })
       .catch((error) => {
-        console.log(error);
+        console.log('6',error);
         return null;
       });
   };
@@ -145,7 +147,7 @@ const HomeScreen = ({ navigation }) => {
         return data;
       })
       .catch((error) => {
-        console.log(error);
+        console.log('1',error);
         return null;
       });
   };
