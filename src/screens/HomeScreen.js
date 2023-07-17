@@ -22,6 +22,8 @@ import CustomBackdrop from "../components/CustomBackdrop";
 import FilterView from "../components/FilterView";
 import { get, post } from "../utils/APICaller";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
+import { ToastMessage } from "../components/CustomToastMessage";
 
 const AVATAR_URL =
   "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
@@ -154,12 +156,11 @@ const HomeScreen = ({ navigation }) => {
 
   //thêm sản phẩm vào Cart
   const addToCart = async (orderid) => {
-    await postOrderDetail(orderid);
-    if (Platform.OS === "android") {
-      ToastAndroid.show("Item Added Successfully to cart", ToastAndroid.SHORT);
-    } else if (Platform.OS === "ios") {
-      // Thông báo cho iOS
-      Alert.alert("Item Added Successfully to cart");
+    try {
+      ToastMessage('success', 'Add successful', 'Mua đê mua đê, mại zô mại zô!!! 😘');
+      await postOrderDetail(orderid);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -190,7 +191,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView>
+    <>
       <ScrollView>
         <SafeAreaView style={{ paddingVertical: 24, gap: 24 }}>
           {/* Header Section */}
@@ -229,6 +230,9 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </View>
             <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Cart");
+              }}
               style={{
                 width: 52,
                 aspectRatio: 1,
@@ -239,14 +243,7 @@ const HomeScreen = ({ navigation }) => {
                 borderColor: colors.border,
               }}
             >
-              <Icons
-                name="shopping-cart"
-                onPress={() => {
-                  navigation.navigate("Cart");
-                }}
-                size={24}
-                color={colors.text}
-              />
+              <Icons name="shopping-cart" size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -453,6 +450,9 @@ const HomeScreen = ({ navigation }) => {
                           ${item.price}
                         </Text>
                         <TouchableOpacity
+                          onPress={() => {
+                            addToCart(item.productid);
+                          }}
                           style={{
                             paddingHorizontal: 12,
                             paddingVertical: 8,
@@ -464,9 +464,6 @@ const HomeScreen = ({ navigation }) => {
                             name="add-shopping-cart"
                             size={18}
                             color="#000"
-                            onPress={() => {
-                              addToCart(item.productid);
-                            }}
                           />
                         </TouchableOpacity>
                       </BlurView>
@@ -495,7 +492,7 @@ const HomeScreen = ({ navigation }) => {
           <FilterView />
         </BottomSheetModal>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 };
 
