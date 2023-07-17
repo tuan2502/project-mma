@@ -7,6 +7,7 @@ import TrackingScreen from "../screens/Tracking/TrackingScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import LoginScreen from "../screens/Login/LoginScreen";
 import RegisterScreen from "../screens/Register/RegisterScreen";
+import CartScreen from "../screens/Cart/CartScreen";
 
 const RootStack = createNativeStackNavigator();
 

@@ -29,17 +29,17 @@ const TabsNavigator = () => {
         }}
       />
       <TabsStack.Screen
-        name="Notifications"
+        name="Payment"
         component={ProductsScreen}
         options={{
           tabBarIcon(props) {
-            return <Icons name="account-balance-wallet" {...props} />;
+            return <Icons name="tracking" {...props} />;
           },
         }}
       />
       <TabsStack.Screen
-        name="Cart"
-        component={CartScreen}
+        name="Notifications"
+        component={Example}
         options={{
           headerShown: false,
           tabBarIcon(props) {
