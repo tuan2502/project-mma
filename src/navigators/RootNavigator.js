@@ -49,13 +49,6 @@ const RootNavigator = () => {
           headerShown: false,
         }}
       />
-      <RootStack.Screen
-        name="Cart"
-        component={CartScreen}
-        options={{
-          headerShown: false
-        }}
-      />
     </RootStack.Navigator>
   );
 };

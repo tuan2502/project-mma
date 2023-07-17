@@ -39,10 +39,20 @@ export function post({
   return request(endpoint, "POST", headers, params, body);
 }
 
-export const put = ({ endpoint, body = {}, params = {}, headers = { "Content-Type": "application/json", Accept: "*/*"} }) => {
+export const put = ({
+  endpoint,
+  body = {},
+  params = {},
+  headers = { "Content-Type": "application/json", Accept: "*/*" },
+}) => {
   return request(endpoint, "PUT", headers, params, body);
 };
 
-export const remove = ({ endpoint, body = {}, params = {}, headers = { "Content-Type": "application/json", Accept: "*/*"} }) => {
+export const remove = ({
+  endpoint,
+  body = {},
+  params = {},
+  headers = { "Content-Type": "application/json", Accept: "*/*" },
+}) => {
   return request(endpoint, "DELETE", headers, params, body);
 };
