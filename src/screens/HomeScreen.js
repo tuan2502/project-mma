@@ -9,6 +9,8 @@ import {
   FlatList,
   ActivityIndicator,
   TextInput,
+  Alert,
+  ToastAndroid,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
@@ -18,7 +20,8 @@ import { BlurView } from "expo-blur";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import CustomBackdrop from "../components/CustomBackdrop";
 import FilterView from "../components/FilterView";
-import { get } from "../utils/APICaller";
+import { get, post } from "../utils/APICaller";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AVATAR_URL =
   "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
@@ -35,6 +38,13 @@ const HomeScreen = ({ navigation }) => {
   const [randomItems, setRandomItems] = useState([]);
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getOrder();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  useEffect(() => {
     get({ endpoint: "/category/" })
       .then((response) => {
         setCategories(response.data["data"]);
@@ -49,8 +59,7 @@ const HomeScreen = ({ navigation }) => {
       .then((response) => {
         const products = response.data["data"];
         setProductData(products);
-        setFilteredProductData(products);
-
+        setFilteredProductData(products); 
         const randomIndexes = [];
         while (randomIndexes.length < 3) {
           const randomIndex = Math.floor(Math.random() * products.length);
@@ -66,6 +75,91 @@ const HomeScreen = ({ navigation }) => {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  // fetch Last Order
+  const getOrder = async () => {
+    const customerid = "4f639884-3ecb-470b-a785-788c73";
+    await get({
+      endpoint: `/order/${customerid}`,
+      params: { customerid: customerid },
+    })
+      .then(async (response) => {
+        const data = response.data["data"];
+
+        if (data.length > 0) {
+          const latestItem = data[0];
+          if (latestItem.status === "cart") {
+            try {
+              await AsyncStorage.setItem(
+                "orderid",
+                latestItem.orderid.toString()
+              );
+            } catch (e) {
+              console.log(error);
+              return null;
+            }
+            return;
+          } else {
+            createCart();
+          }
+        } else if (data.length === 0) {
+          createCart();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
+  };
+
+  // tạo Cart
+  const createCart = async () => {
+    await post({
+      endpoint: "/order/",
+      body: { customerid: "4f639884-3ecb-470b-a785-788c73" },
+    })
+      .then((response) => {
+        const data = response.data["data"];
+        getOrder();
+        return data;
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
+  };
+
+  //post OrderDetail
+  const postOrderDetail = async (productid) => {
+    const orderid = await AsyncStorage.getItem("orderid");
+    await post({
+      endpoint: "/orderdetail/",
+      body: {
+        quantity: "1",
+        orderid: orderid,
+        productid: productid,
+      },
+    })
+      .then((response) => {
+        const data = response.data["data"];
+        return data;
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
+  };
+
+  //thêm sản phẩm vào Cart
+  const addToCart = async (orderid) => {
+    await postOrderDetail(orderid);
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Item Added Successfully to cart", ToastAndroid.SHORT);
+    } else if (Platform.OS === "ios") {
+      // Thông báo cho iOS
+      Alert.alert("Item Added Successfully to cart");
+    }
+  };
 
   const handleSearch = useCallback(() => {
     const filteredData = productData.filter((item) => {
@@ -143,7 +237,14 @@ const HomeScreen = ({ navigation }) => {
                 borderColor: colors.border,
               }}
             >
-              <Icons name="notifications" size={24} color={colors.text} />
+              <Icons
+                name="shopping-cart"
+                onPress={() => {
+                  navigation.navigate("Cart");
+                }}
+                size={24}
+                color={colors.text}
+              />
             </TouchableOpacity>
           </View>
 
@@ -169,7 +270,6 @@ const HomeScreen = ({ navigation }) => {
                 <Card
                   key={item.productid} // Add key prop with unique value
                   onPress={() => {
-                    console.log(item.productid);
                     navigation.navigate("Details", {
                       id: item.productid,
                     });
@@ -362,6 +462,9 @@ const HomeScreen = ({ navigation }) => {
                             name="add-shopping-cart"
                             size={18}
                             color="#000"
+                            onPress={() => {
+                              addToCart(item.productid);
+                            }}
                           />
                         </TouchableOpacity>
                       </BlurView>

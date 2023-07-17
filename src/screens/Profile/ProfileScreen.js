@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { get } from "../../utils/APICaller";
@@ -33,9 +34,6 @@ const ProfileScreen = ({ navigation }) => {
         console.log(error);
       });
   };
-  Pressable,
-} from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5";
 
   return (
     <View style={{ flex: 1 }}>

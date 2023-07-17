@@ -6,110 +6,185 @@ import {
   Image,
   ToastAndroid,
   ActivityIndicator,
+  StyleSheet,
+  Button,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLOURS, Items } from "../../database/Database";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { get } from "../../utils/APICaller";
+import { get, put, remove } from "../../utils/APICaller";
 import { formatCurrency } from "../../components/Format";
 
+import Dialog from "react-native-dialog";
+import {Picker} from '@react-native-picker/picker';
+
 const CartScreen = ({ navigation }) => {
-  const [product, setProduct] = useState();
   const [products, setProducts] = useState([]);
+  const [cartList, setCartList] = useState();
   const [isLoading, setLoading] = useState(true);
   const [callCount, setCallCount] = useState(0);
-
 
   const [total, setTotal] = useState(null);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-
+      getOrderList();
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, cartList]);
 
-
-  const getProductFromDB = async () => {
-    await get({ endpoint: "/product/" })
-      .then((response) => {
-        setProducts(response.data["data"]);
+  // lấy card order theo orderid
+  const getOrderList = async () => {
+    const customerid = "4f639884-3ecb-470b-a785-788c73";
+    await get({
+      endpoint: `/order/${customerid}`,
+      params: { customerid: customerid },
+    })
+      .then(async (response) => {
+        const data = response.data["data"];
+        const orderid = await AsyncStorage.getItem("orderid");
+        data.filter((item) => {
+          if (item.orderid.toString() === orderid) {
+            setProducts(item.OrderDetails);
+            return setCartList(item);
+          }
+        });
       })
       .catch((error) => {
         console.log(error);
+        return null;
       })
       .finally(() => setLoading(false));
   };
-  // console.log('products: ', products);
 
-  const getCartItems = async () => {
-    try {
-      const items = await AsyncStorage.getItem("cartItems");
-      if (items) {
-        const listCart = JSON.parse(items);
-        console.log(listCart);
-        // console.log(products);
-        let productData = [];
-        if (listCart) {
-          products.forEach((data) => {
-            if (listCart.includes(data.productid)) {
-              productData.push(data);
-              // console.log(productData);
-              return;
-            }
-          });
-          setProduct(productData);
-          // getTotal(productData);
-        }
-      } else {
-        return [];
-      }
-    } catch (error) {
-      console.log("Error retrieving cart items:", error);
-      return [];
-    }
-  };
-
-  // const getTotal = (productData) => {
-  //   let total = 0;
-  //   for (let index = 0; index < productData.length; index++) {
-  //     let productPrice = productData[index].price;
-  //     total = total + productPrice;
-  //   }
-  //   setTotal(total);
-  //   console.log(total);
+  //tăng giảm số lượng
+  // const handleIncreaseQuantity = (e) => {
+  //   const quantity = e.target.value;
+  //   quantity++;
+  //   e.target.value = quantity;
   // };
 
-  // remove data from Cart
-  const removeItemFromCart = async (id) => {
-    let itemArray = await AsyncStorage.getItem("cartItems");
-    itemArray = JSON.parse(itemArray);
-    if (itemArray) {
-      let array = itemArray;
-      for (let index = 0; index < array.length; index++) {
-        if (array[index] == id) {
-          array.splice(index, 1);
-        }
-        await AsyncStorage.setItem("cartItems", JSON.stringify(array));
-        getDataFromDB();
-      }
-    }
+  // const handleDecreaseQuantity = (e) => {
+  //   const quantity = e.target.value;
+  //   if (quantity > 1) {
+  //     quantity--;
+  //     e.target.value = quantity;
+  //   }
+  // };
+
+  //picker quantity
+  const PickerQuantity = ({ quantity, orderid, orderdetailid }) => {
+    const [country, setCountry] = useState(quantity);
+    const [visible, setVisible] = useState(false);
+    const [tempCountry, setTempCountry] = useState("Unknown");
+
+
+    const PutQuantity = async (newQuantity) => {
+      await put({
+        endpoint: `/orderdetail/`,
+        body: {
+          quantity: newQuantity,
+          orderdetailid: orderdetailid,
+          orderid: orderid,
+        },
+      })
+        .then((response) => {
+          const data = response.data["data"];
+          getOrderList();
+          return data;
+        })
+        .catch((error) => {
+          console.log("error", error);
+          // return null;
+        });
+    };
+
+    const onPressOK = () => {
+      setCountry(tempCountry);
+      setVisible(false);
+      PutQuantity(tempCountry);
+    };
+
+    return (
+      <View style={styles.screen}>
+        <Dialog.Container visible={visible}>
+          <Dialog.Title>Please select quantity</Dialog.Title>
+          <Picker
+            selectedValue={tempCountry}
+            onValueChange={(value, index) => setTempCountry(value)}
+            mode="dropdown" // Android only
+            style={styles.picker}
+          >
+            {[...Array(20)].map((_, i) => {
+              const value = i + 1;
+              const label = `${value}`;
+              return <Picker.Item key={i} label={label} value={value} />;
+            })}
+          </Picker>
+          <Dialog.Button
+            label="Cancel"
+            onPress={() => {
+              setTempCountry(country);
+              setVisible(false);
+            }}
+          />
+          <Dialog.Button
+            label="OK"
+            onPress={() => {
+              onPressOK();
+            }}
+          />
+        </Dialog.Container>
+        <Text
+          style={styles.text}
+          onPress={() => {
+            setTempCountry(country);
+            setVisible(true);
+          }}
+        >
+          {country}
+        </Text>
+      </View>
+    );
   };
+
+  // remove data from Cart
+  const removeItemFromCart = async (orderdetailid, orderid) => {
+
+    await remove({
+      endpoint: `/orderdetail/${orderdetailid}`,
+      params: { orderdetailid: orderdetailid },
+      body: { orderid: orderid },
+    })
+      .then(async (response) => {
+        const data = response.data["data"];
+        getOrderList();
+        return data;
+      })
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
+  };
+  
   // checkout
-  const checkOut = async () => {
-    try {
-      await AsyncStorage.removeItem("cartItems");
-    } catch (error) {
-      return error;
+  const checkOut = async (orderid) => {
+    const tracking = "pending";
+    putStatus(orderid, tracking.toLowerCase());
+
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Items will be Deliverd SOON!", ToastAndroid.SHORT);
+    } else if (Platform.OS === "ios") {
+      // Thông báo cho iOS
+      Alert.alert("Items will be Deliverd SOON!");
     }
-    ToastAndroid.show("Items will be Deliverd SOON!", ToastAndroid.SHORT);
-    // navigation.navigate("Home");
+    navigation.navigate("Home");
   };
 
   const renderProduct = (data, index) => {
-    // console.log('data', data);
     return (
       <TouchableOpacity
         key={data.productid}
@@ -133,7 +208,7 @@ const CartScreen = ({ navigation }) => {
         >
           <Image
             source={{
-              uri: data.mainimg,
+              uri: data.Product.mainimg,
             }}
             style={{
               width: "100%",
@@ -164,7 +239,7 @@ const CartScreen = ({ navigation }) => {
                 letterSpacing: 1,
               }}
             >
-              {data.name}
+              {data.Product.name}
             </Text>
             <View
               style={{
@@ -182,7 +257,7 @@ const CartScreen = ({ navigation }) => {
                   marginRight: 4,
                 }}
               >
-                {formatCurrency(data.price)}
+                ${data.Product.price}
               </Text>
             </View>
           </View>
@@ -200,7 +275,7 @@ const CartScreen = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <View
+              {/* <View
                 style={{
                   borderRadius: 100,
                   marginRight: 20,
@@ -217,9 +292,13 @@ const CartScreen = ({ navigation }) => {
                     color: COLOURS.backgroundDark,
                   }}
                 />
-              </View>
-              <Text>1</Text>
-              <View
+              </View> */}
+              <PickerQuantity
+                quantity={data.quantity}
+                orderid={data.orderid}
+                orderdetailid={data.orderdetailid}
+              />
+              {/* <View
                 style={{
                   borderRadius: 100,
                   marginLeft: 20,
@@ -231,25 +310,29 @@ const CartScreen = ({ navigation }) => {
               >
                 <MaterialCommunityIcons
                   name="plus"
+                  onPress={handleIncreaseQuantity}
                   style={{
                     fontSize: 16,
                     color: COLOURS.backgroundDark,
                   }}
                 />
-              </View>
+              </View> */}
             </View>
             <TouchableOpacity
               key={data.productid}
-              onPress={() => removeItemFromCart(data.productid)}
+              onPress={() =>
+                removeItemFromCart(data.orderdetailid, data.orderid)
+              }
+              style={{ borderRadius: 10, overflow: "hidden" }}
             >
               <MaterialCommunityIcons
                 name="delete-outline"
                 style={{
                   fontSize: 16,
-                  color: COLOURS.backgroundDark,
-                  backgroundColor: COLOURS.backgroundLight,
+
+                  color: COLOURS.white,
+                  backgroundColor: "#Ed4245",
                   padding: 8,
-                  borderRadius: 100,
                 }}
               />
             </TouchableOpacity>
@@ -259,10 +342,31 @@ const CartScreen = ({ navigation }) => {
     );
   };
 
+  //thay đổi status
+  const putStatus = async (orderid, tracking) => {
+    await put({
+      endpoint: `/order/status/${orderid}`,
+      params: { orderid: orderid },
+      body: {
+        tracking: tracking,
+      },
+    })
+      .then((response) => {
+        const data = response.data["data"];
+        return data;
+      })
+      .catch((error) => {
+        console.log("error", error);
+        return null;
+      });
+  };
+
   return (
     <>
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        />
       ) : (
         <SafeAreaView
           style={{
@@ -318,8 +422,8 @@ const CartScreen = ({ navigation }) => {
               My Cart
             </Text>
             <View style={{ paddingRight: 16 }}>
-              {product
-                ? product.map((data, index) => renderProduct(data, index))
+              {products
+                ? products.map((data, index) => renderProduct(data, index))
                 : null}
             </View>
 
@@ -342,48 +446,6 @@ const CartScreen = ({ navigation }) => {
                 >
                   Order Info
                 </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text>Subtotal</Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "400",
-                      maxWidth: "80%",
-                      color: COLOURS.black,
-                      opacity: 0.5,
-                    }}
-                  >
-                    ${total}
-                  </Text>
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginBottom: 20,
-                  }}
-                >
-                  <Text>Shipping Tax</Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "400",
-                      maxWidth: "80%",
-                      color: COLOURS.black,
-                      opacity: 0.5,
-                    }}
-                  >
-                    ${total / 20}
-                  </Text>
-                </View>
 
                 <View
                   style={{
@@ -400,7 +462,7 @@ const CartScreen = ({ navigation }) => {
                       color: COLOURS.black,
                     }}
                   >
-                    ${total + total / 20}
+                    {formatCurrency(cartList.totalmoney)}
                   </Text>
                 </View>
               </View>
@@ -418,7 +480,11 @@ const CartScreen = ({ navigation }) => {
             }}
           >
             <TouchableOpacity
-              onPress={() => (total != 0 ? checkOut() : null)}
+              onPress={() =>
+                cartList.totalmoney != 0
+                  ? checkOut(cartList.orderid)
+                  : Alert.alert("Có hàng đi rồi thanh toán nhó!")
+              }
               style={{
                 width: "86%",
                 height: "90%",
@@ -437,7 +503,7 @@ const CartScreen = ({ navigation }) => {
                   textTransform: "uppercase",
                 }}
               >
-                CHECKOUT ({formatCurrency(total)})
+                CHECKOUT ({formatCurrency(cartList.totalmoney)})
               </Text>
             </TouchableOpacity>
           </View>
@@ -446,5 +512,25 @@ const CartScreen = ({ navigation }) => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  screen: {
+    width: 50,
+    backgroundColor: '#e1ecf7',
+    borderRadius: 5,
+    borderColor: '#ccc',
+    borderWidth: 1,
+  },
+  text: {
+    fontSize: 20,
+    textAlign: "center",
+  },
+  picker: {
+    // backgroundColor: "white",
+    marginVertical: 30,
+    width: "100%",
+    padding: 10,
+  },
+});
 
 export default CartScreen;
