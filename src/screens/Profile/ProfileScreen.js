@@ -206,7 +206,7 @@ const ProfileScreen = ({ navigation }) => {
                   });
                 }}
               >
-                <Icon name="wallet" size={25} />
+                <Icon name="wallet" size={18} />
                 <Text marginTop={10}>Pending</Text>
               </Pressable>
               <Pressable
@@ -221,7 +221,7 @@ const ProfileScreen = ({ navigation }) => {
                   });
                 }}
               >
-                <Icon name="box" size={25} />
+                <Icon name="box" size={18} />
                 <Text marginTop={10}>Packaging</Text>
               </Pressable>
               <Pressable
@@ -236,7 +236,7 @@ const ProfileScreen = ({ navigation }) => {
                   });
                 }}
               >
-                <Icon name="truck" size={25} />
+                <Icon name="truck" size={18} />
                 <Text marginTop={10}>Delivering</Text>
               </Pressable>
               <Pressable
@@ -251,63 +251,9 @@ const ProfileScreen = ({ navigation }) => {
                   });
                 }}
               >
-                <Icon name="angle-right" size={25} />
+                <Icon name="angle-right" size={18} />
                 <Text marginTop={10}>See more</Text>
               </Pressable>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                marginTop: 30,
-                marginHorizontal: 30,
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name="facebook" size={25} color="#bdbdbd" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name="instagram" size={25} color="#bdbdbd" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name="github" size={25} color="#bdbdbd" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name="twitter" size={25} color="#bdbdbd" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Icon name="linkedin" size={25} color="#bdbdbd" />
-              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -322,16 +268,6 @@ export default ProfileScreen;
 const FloatButton = () => {
   return (
     <TouchableOpacity style={styles.floatButton}>
-      <Text
-        style={{
-          color: "#f5f5f5",
-          fontSize: 16,
-          fontWeight: "600",
-          paddingHorizontal: 3,
-        }}
-      >
-        Log out
-      </Text>
       <View
         style={{
           backgroundColor: "#f5f5f5",
@@ -352,11 +288,10 @@ const styles = StyleSheet.create({
   floatButton: {
     flexDirection: "row",
     position: "absolute",
-    // minWidth: 150,
-    height: 50,
-    bottom: 20,
+    height: 45,
+    top: 50,
     right: 20,
-    backgroundColor: "#000",
+    backgroundColor: "#f5f5f5",
     borderRadius: 64,
     padding: 12,
     justifyContent: "center",
