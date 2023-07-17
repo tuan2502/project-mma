@@ -6,8 +6,7 @@ import Icons from "@expo/vector-icons/MaterialIcons";
 import CustomBottomTabs from "../components/CustomBottomTabs";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import CartScreen from "../screens/Cart/CartScreen";
-import LoginScreen from "../screens/Login/LoginScreen";
-import RegisterScreen from "../screens/Register/RegisterScreen";
+import ProductsScreen from "../screens/ProductList/ProductListScreen";
 
 const TabsStack = createBottomTabNavigator();
 
@@ -30,21 +29,21 @@ const TabsNavigator = () => {
         }}
       />
       <TabsStack.Screen
+        name="Products"
+        component={ProductsScreen}
+        options={{
+          tabBarIcon(props) {
+            return <Icons name="account-balance-wallet" {...props} />;
+          },
+        }}
+      />
+      <TabsStack.Screen
         name="Cart"
         component={CartScreen}
         options={{
           headerShown: false,
           tabBarIcon(props) {
             return <Icons name="shopping-cart" {...props} />;
-          },
-        }}
-      />
-      <TabsStack.Screen
-        name="Payment"
-        component={RegisterScreen}
-        options={{
-          tabBarIcon(props) {
-            return <Icons name="account-balance-wallet" {...props} />;
           },
         }}
       />

@@ -5,12 +5,28 @@ import TabsNavigator from "./TabsNavigator";
 import ProductsScreen from "../screens/ProductList/ProductListScreen";
 import TrackingScreen from "../screens/Tracking/TrackingScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
+import LoginScreen from "../screens/Login/LoginScreen";
+import RegisterScreen from "../screens/Register/RegisterScreen";
 
 const RootStack = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
-    <RootStack.Navigator>
+    <RootStack.Navigator initialRouteName="Login">
+      <RootStack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       <RootStack.Screen
         name="TabsStack"
         component={TabsNavigator}
@@ -28,20 +44,6 @@ const RootNavigator = () => {
       <RootStack.Screen
         name="Tracking"
         component={TrackingScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <RootStack.Screen
-        name="Products"
-        component={ProductsScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <RootStack.Screen
-        name="Profile"
-        component={ProfileScreen}
         options={{
           headerShown: false,
         }}

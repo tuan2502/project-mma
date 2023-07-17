@@ -12,12 +12,13 @@ import {
   View,
 } from "react-native";
 import { post } from "../../utils/APICaller";
+import { useNavigation, useRoute } from "@react-navigation/core";
 
 const SizeBox = ({ height }) => {
   return <View style={{ marginBottom: height }}></View>;
 };
 
-const LoginScreen = () => {
+const LoginScreen = ({ navigation }) => {
   const [usernameInput, setUsername] = useState("");
   const [passwordInput, setPassword] = useState("");
 
@@ -29,7 +30,6 @@ const LoginScreen = () => {
   };
 
   const handleSubmit = () => {
-    console.log(usernameInput, passwordInput);
     post({
       endpoint: `/login`,
       body: {
@@ -39,7 +39,7 @@ const LoginScreen = () => {
       },
     })
       .then((response) => {
-        alert(`Login sucessfully!!!`);
+        navigation.navigate("TabsStack", { screen: "Home" });
       })
       .catch((error) => {
         alert(`Something went wrong, you should check again`);
@@ -102,6 +102,31 @@ const LoginScreen = () => {
             </View>
           </TouchableOpacity>
         </KeyboardAvoidingView>
+
+        <SizeBox height={16} />
+        <View
+          style={{
+            marginBottom: 50,
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <Text>Don't have an account? </Text>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Register");
+            }}
+          >
+            <Text
+              style={{
+                fontStyle: "italic",
+                textDecorationLine: "underline",
+              }}
+            >
+              Register Now
+            </Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </View>
   );
