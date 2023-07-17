@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { post } from "../../utils/APICaller";
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ navigation }) => {
   const [usernameInput, setUsername] = useState("");
   const [passwordInput, setPassword] = useState("");
   const [fullnameInput, setName] = useState("");
@@ -40,6 +40,7 @@ const RegisterScreen = () => {
     })
       .then((response) => {
         alert(`Registed sucessfully!!!`);
+        navigation.navigate("Login");
       })
       .catch((error) => {
         alert(`Something went wrong, you should check again`);
@@ -112,6 +113,31 @@ const RegisterScreen = () => {
               </View>
             </TouchableOpacity>
           </KeyboardAvoidingView>
+
+          <View style={{ marginBottom: 20 }} />
+          <View
+            style={{
+              marginBottom: 50,
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <Text>Have an account? </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Login");
+              }}
+            >
+              <Text
+                style={{
+                  fontStyle: "italic",
+                  textDecorationLine: "underline",
+                }}
+              >
+                Login Now
+              </Text>
+            </TouchableOpacity>
+          </View>
         </SafeAreaView>
       </View>
     </TouchableWithoutFeedback>

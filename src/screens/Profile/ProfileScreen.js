@@ -178,6 +178,11 @@ const ProfileScreen = ({ navigation }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "pending",
+                });
+              }}
             >
               <Icon name="wallet" size={25} />
               <Text marginTop={10}>Pending</Text>
@@ -188,15 +193,25 @@ const ProfileScreen = ({ navigation }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "packaging",
+                });
+              }}
             >
               <Icon name="box" size={25} />
-              <Text marginTop={10}>Packing</Text>
+              <Text marginTop={10}>Packaging</Text>
             </Pressable>
             <Pressable
               style={{
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+              }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "delivering",
+                });
               }}
             >
               <Icon name="truck" size={25} />
@@ -207,6 +222,11 @@ const ProfileScreen = ({ navigation }) => {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+              }}
+              onPress={() => {
+                navigation.navigate("Tracking", {
+                  statusInput: "pending",
+                });
               }}
             >
               <Icon name="angle-right" size={25} />

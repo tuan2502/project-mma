@@ -5,8 +5,8 @@ import HomeScreen from "../screens/HomeScreen";
 import Icons from "@expo/vector-icons/MaterialIcons";
 import CustomBottomTabs from "../components/CustomBottomTabs";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
-import RegisterScreen from "../screens/Register/RegisterScreen";
-import MyDialog from "../screens/Demo";
+import CartScreen from "../screens/Cart/CartScreen";
+import ProductsScreen from "../screens/ProductList/ProductListScreen";
 
 const TabsStack = createBottomTabNavigator();
 
@@ -31,19 +31,21 @@ const TabsNavigator = () => {
       <TabsStack.Screen
         name="Notifications"
         component={MyDialog}
+        name="Products"
+        component={ProductsScreen}
         options={{
-          headerShown: false,
           tabBarIcon(props) {
-            return <Icons name="notifications" {...props} />;
+            return <Icons name="account-balance-wallet" {...props} />;
           },
         }}
       />
       <TabsStack.Screen
-        name="Payment"
-        component={RegisterScreen}
+        name="Cart"
+        component={CartScreen}
         options={{
+          headerShown: false,
           tabBarIcon(props) {
-            return <Icons name="account-balance-wallet" {...props} />;
+            return <Icons name="notifications" {...props} />;
           },
         }}
       />
