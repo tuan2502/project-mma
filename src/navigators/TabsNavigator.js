@@ -30,8 +30,6 @@ const TabsNavigator = () => {
       />
       <TabsStack.Screen
         name="Notifications"
-        component={MyDialog}
-        name="Products"
         component={ProductsScreen}
         options={{
           tabBarIcon(props) {
