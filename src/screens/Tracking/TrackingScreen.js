@@ -83,7 +83,7 @@ const TrackingScreen = ({
             alignItems: "center",
           }}
         >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
             <Icon
               name="angle-left"
               size={17}
@@ -98,7 +98,7 @@ const TrackingScreen = ({
               fontWeight: "600",
             }}
           >
-            Order Details
+            Tracking Your Orders
           </Text>
         </View>
         <View style={{ flexDirection: "row" }}>
@@ -114,7 +114,17 @@ const TrackingScreen = ({
               }}
               onPress={() => handleStatusItemClick(statusItem)}
             >
-              <Text>{statusItem === "success" ? "delivered" : statusItem}</Text>
+              <Text>
+                {statusItem === "success"
+                  ? "Delivered"
+                  : statusItem === "pending"
+                  ? "Pending"
+                  : statusItem === "packaging"
+                  ? "Packaging"
+                  : statusItem === "delivering"
+                  ? "Delivering"
+                  : "Canceled"}
+              </Text>
             </Pressable>
           ))}
         </View>

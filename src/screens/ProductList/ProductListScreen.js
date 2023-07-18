@@ -72,7 +72,7 @@ const ProductsList = ({ navigation }) => {
         setRandomItems(randomItems);
       })
       .catch((error) => {
-        console.log('3',error);
+        console.log("3", error);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -211,26 +211,12 @@ const ProductsList = ({ navigation }) => {
             gap: 8,
           }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{
-              width: 52,
-              aspectRatio: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 52,
-              borderWidth: 1,
-              borderColor: "black",
-            }}
-          >
-            <Icons name="arrow-back" size={24} color={"black"} />
-          </TouchableOpacity>
           <Text
             style={{
               flex: 1,
-
+              marginLeft: 52,
               textAlign: "center",
-              fontSize: 18,
+              fontSize: 16,
               color: COLOURS.black,
               fontWeight: "600",
             }}
@@ -244,12 +230,9 @@ const ProductsList = ({ navigation }) => {
               aspectRatio: 1,
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 52,
-              borderWidth: 1,
-              borderColor: "black",
             }}
           >
-            <Icons name="shopping-cart" size={24} color={"black"} />
+            <Icons name="shopping-cart" size={22} color={"black"} />
           </TouchableOpacity>
         </View>
 

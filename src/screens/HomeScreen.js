@@ -82,9 +82,8 @@ const HomeScreen = ({ navigation }) => {
       })
       .finally(() => setLoading(false));
   }, []);
-  
-  // hàm kiểm tra xem phần tử cuối cùng có phải cart hay không? 
 
+  // hàm kiểm tra xem phần tử cuối cùng có phải cart hay không?
 
   // fetch Last Order
   const getOrder = async () => {
@@ -283,13 +282,6 @@ const HomeScreen = ({ navigation }) => {
               >
                 Popular
               </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("Products");
-                }}
-              >
-                <Text style={{ color: colors.primary }}>See All</Text>
-              </TouchableOpacity>
             </View>
           </View>
           {/* Mesonary */}
