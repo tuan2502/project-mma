@@ -245,7 +245,7 @@ const ProfileScreen = ({ navigation }) => {
                 }}
                 onPress={() => {
                   navigation.navigate("Tracking", {
-                    statusInput: "pending",
+                    statusInput: "success",
                   });
                 }}
               >

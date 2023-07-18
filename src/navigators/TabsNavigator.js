@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
@@ -31,13 +30,6 @@ const TabsNavigator = () => {
         }}
       />
       <TabsStack.Screen
-        name="Tracking"
-        component={Example}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <TabsStack.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
@@ -49,7 +41,3 @@ const TabsNavigator = () => {
 };
 
 export default TabsNavigator;
-
-const Example = () => {
-  return <View />;
-};
