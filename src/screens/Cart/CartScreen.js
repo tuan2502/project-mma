@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLOURS, Items } from "../../database/Database";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { get, put, remove } from "../../utils/APICaller";
+import { get, put, post, remove } from "../../utils/APICaller";
 import { formatCurrency } from "../../components/Format";
 
 import Dialog from "react-native-dialog";
@@ -146,18 +146,22 @@ const CartScreen = ({ navigation }) => {
       .then(async (response) => {
         const data = response.data["data"];
         getOrderList();
-        ToastMessage('success','Remove successful!', 'Rảnh nhớ thêm zô lại nha thí chủ 😉');
+        ToastMessage(
+          "success",
+          "Remove successful!",
+          "Rảnh nhớ thêm zô lại nha thí chủ 😉"
+        );
         return data;
       })
       .catch((error) => {
-        ToastMessage('error','Error!', error);
+        ToastMessage("error", "Error!", error);
         return null;
       });
   };
 
   //dialog delete
   const RemoveDialog = ({ data }) => {
-  const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     return (
       <>
@@ -203,7 +207,7 @@ const CartScreen = ({ navigation }) => {
 
   //DialogCheckout
   const DialogCheckout = ({ cartList }) => {
-  const [visible, setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     return (
       <>
@@ -223,8 +227,8 @@ const CartScreen = ({ navigation }) => {
             onPress={() => {
               setVisible(false);
               cartList.totalmoney != 0
-              ? checkOut(cartList.orderid)
-              : Alert.alert("Chưa có hàng kìa thí chủ")
+                ? checkOut(cartList.orderid)
+                : Alert.alert("Chưa có hàng kìa thí chủ");
             }}
           />
         </Dialog.Container>
@@ -260,9 +264,15 @@ const CartScreen = ({ navigation }) => {
     const tracking = "pending";
     putStatus(orderid, tracking.toLowerCase());
 
-    ToastMessage('success','Order successful!', 'Cảm ơn thí chủ đã mua hàng, ghé lại sớm nha! 😍');
+    ToastMessage(
+      "success",
+      "Order successful!",
+      "Cảm ơn thí chủ đã mua hàng, ghé lại sớm nha! 😍"
+    );
 
-    navigation.navigate("Home");
+    navigation.navigate("Tracking", {
+      statusInput: "pending",
+    });
   };
 
   const renderProduct = (data, index) => {
@@ -417,10 +427,27 @@ const CartScreen = ({ navigation }) => {
     })
       .then((response) => {
         const data = response.data["data"];
+        createCart();
         return data;
       })
       .catch((error) => {
         console.log("error", error);
+        return null;
+      });
+  };
+
+  const createCart = async () => {
+    await post({
+      endpoint: "/order/",
+      body: { customerid: "4f639884-3ecb-470b-a785-788c73" },
+    })
+      .then((response) => {
+        const data = response.data["data"];
+        getOrder();
+        return data;
+      })
+      .catch((error) => {
+        console.log("6", error);
         return null;
       });
   };
@@ -572,10 +599,8 @@ const styles = StyleSheet.create({
 
   text: {
     fontSize: 16,
-    textAlign:  "center",
+    textAlign: "center",
   },
-
-
 });
 
 export default CartScreen;

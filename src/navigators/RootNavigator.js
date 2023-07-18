@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import DetailsScreen from "../screens/DetailsScreen";
 import TabsNavigator from "./TabsNavigator";
@@ -8,17 +8,37 @@ import ProfileScreen from "../screens/Profile/ProfileScreen";
 import LoginScreen from "../screens/Login/LoginScreen";
 import RegisterScreen from "../screens/Register/RegisterScreen";
 import CartScreen from "../screens/Cart/CartScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import ProductsList from "../screens/ProductList/ProductListScreen";
 
 const RootStack = createNativeStackNavigator();
 
 const RootNavigator = () => {
+  const [token, setToken] = useState();
+
+  useEffect(() => {
+    async function getToken() {
+      const userData = await AsyncStorage.getItem("LOGIN_TOKEN");
+      setToken(userData);
+    }
+    getToken();
+  });
+
+  console.log("Root:", token);
+
   return (
-    <RootStack.Navigator initialRouteName="Login">
+    <RootStack.Navigator
+      initialRouteName="Login"
+      screenOptions={{ unmountOnBlur: true }}
+    >
+      {/* {!token ? (
+        <> */}
       <RootStack.Screen
         name="Login"
         component={LoginScreen}
         options={{
           headerShown: false,
+          unmountOnBlur: true,
         }}
       />
       <RootStack.Screen
@@ -28,6 +48,9 @@ const RootNavigator = () => {
           headerShown: false,
         }}
       />
+      {/* </>
+      ) : (
+        <> */}
       <RootStack.Screen
         name="TabsStack"
         component={TabsNavigator}
@@ -56,6 +79,8 @@ const RootNavigator = () => {
           headerShown: false,
         }}
       />
+      {/* </>
+      )}  */}
     </RootStack.Navigator>
   );
 };

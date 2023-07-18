@@ -8,28 +8,11 @@ import {
   FlatList,
   SafeAreaView,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import React, { useEffect, useState, useCallback } from "react";
 import { get, remove, post, put } from "../../utils/APICaller";
-
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    name: "First Item",
-    img: "https://images.unsplash.com/photo-1587052755556-89808205c097?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    name: "Second Item",
-    img: "https://images.unsplash.com/photo-1587052755556-89808205c097?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    name: "Third Item",
-    img: "https://images.unsplash.com/photo-1587052755556-89808205c097?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-  },
-];
 
 const TrackingScreen = ({
   navigation,
@@ -37,7 +20,7 @@ const TrackingScreen = ({
     params: { statusInput },
   },
 }) => {
-  const [order, setOrder] = useState();
+  const [orders, setOrder] = useState([]);
   const [status, setStatus] = useState([
     "pending",
     "packaging",
@@ -45,166 +28,174 @@ const TrackingScreen = ({
     "success",
     "cancel",
   ]);
+  const [id, setId] = useState("4f639884-3ecb-470b-a785-788c73");
+  const [selectedStatus, setSelectedStatus] = useState(statusInput);
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
-    get({ endpoint: `/order` })
+    get({ endpoint: `/order/${id}` })
       .then((response) => {
-        console.log(response.data);
+        let data = response.data.data;
+        data = data.filter(
+          (item) => item.status !== "cart" && item.customerid === id
+        );
+        setOrder(data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const Item = ({ item }) => (
-    <View style={{ flexDirection: "row" }}>
-      <Image
-        source={{ uri: item.img }}
-        style={{ width: 50, height: 50, margin: 5 }}
-      />
-      <View style={{ width: "80%", margin: 5 }}>
-        <Text>{item.name}</Text>
-        <Text style={{ color: "#404040", textAlign: "right" }}> x 1</Text>
-        <Text style={{ color: "#ed3c2f", textAlign: "right" }}> 10 $</Text>
-      </View>
-    </View>
-  );
+  useEffect(() => {
+    if (selectedStatus === "all") {
+      setFilteredOrders(orders);
+    } else {
+      const filteredData = orders.filter(
+        (item) => item.status === selectedStatus
+      );
+      setFilteredOrders(filteredData);
+    }
+  }, [selectedStatus, orders]);
 
-  return (
-    <SafeAreaView
-      style={{
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#f5f5f5",
-        position: "relative",
-        backgroundColor: "white",
-      }}
-    >
-      <View
+  const handleStatusItemClick = (statusItem) => {
+    setSelectedStatus(statusItem);
+  };
+
+  if (orders.length > 0) {
+    return (
+      <SafeAreaView
         style={{
           width: "100%",
-          flexDirection: "row",
-          paddingTop: 16,
-          paddingLeft: 16,
-          paddingHorizontal: 16,
-          justifyContent: "left",
-          alignItems: "center",
+          height: "100%",
+          backgroundColor: "#f5f5f5",
+          position: "relative",
+          backgroundColor: "white",
         }}
       >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon
-            name="angle-left"
-            size={17}
-            style={{
-              padding: 12,
-            }}
-          />
-        </TouchableOpacity>
-        <Text
-          style={{
-            fontSize: 17,
-            fontWeight: "600",
-          }}
-        >
-          Order Details
-        </Text>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          marginHorizontal: 30,
-          padding: 10,
-        }}
-      >
-        <Pressable
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            navigation.navigate("Tracking", {
-              statusInput: "pending",
-            });
-          }}
-        >
-          <Text>Pending</Text>
-        </Pressable>
-        <Pressable
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            navigation.navigate("Tracking", {
-              statusInput: "packaging",
-            });
-          }}
-        >
-          <Text>Packaging</Text>
-        </Pressable>
-        <Pressable
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            navigation.navigate("Tracking", {
-              statusInput: "delivering",
-            });
-          }}
-        >
-          <Text>Delivering</Text>
-        </Pressable>
-        <Pressable
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          onPress={() => {
-            navigation.navigate("Tracking", {
-              statusInput: "pending",
-            });
-          }}
-        >
-          <Text>Canceled</Text>
-        </Pressable>
-      </View>
-      <ScrollView style={{ backgroundColor: "#e8e8e8" }}>
         <View
           style={{
-            marginVertical: 10,
-            backgroundColor: "white",
-            padding: 10,
+            width: "100%",
+            flexDirection: "row",
+            paddingTop: 16,
+            paddingLeft: 16,
+            paddingHorizontal: 16,
+            justifyContent: "left",
+            alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 16, fontWeight: "500" }}>
-            Order: ở đây để id nè
-          </Text>
-          <FlatList
-            data={DATA}
-            renderItem={({ item }) => <Item item={item} />}
-            keyExtractor={(item) => item.id}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+            <Icon
+              name="angle-left"
+              size={17}
+              style={{
+                padding: 12,
+              }}
+            />
+          </TouchableOpacity>
           <Text
             style={{
-              fontSize: 16,
-              fontWeight: "500",
-              paddingVertical: 5,
+              fontSize: 17,
+              fontWeight: "600",
             }}
           >
-            Total: ở đây để tổng bill
-          </Text>
-          <Text style={{ fontSize: 14, fontWeight: "400", paddingVertical: 5 }}>
-            Address: ở đây để địa chỉ nhận hàng
+            Tracking Your Orders
           </Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
+        <View style={{ flexDirection: "row" }}>
+          {status.map((statusItem) => (
+            <Pressable
+              key={statusItem}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: selectedStatus === statusItem ? "pink" : null,
+                paddingVertical: 10,
+              }}
+              onPress={() => handleStatusItemClick(statusItem)}
+            >
+              <Text>
+                {statusItem === "success"
+                  ? "Delivered"
+                  : statusItem === "pending"
+                  ? "Pending"
+                  : statusItem === "packaging"
+                  ? "Packaging"
+                  : statusItem === "delivering"
+                  ? "Delivering"
+                  : "Canceled"}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+
+        <ScrollView style={{ backgroundColor: "#e8e8e8" }}>
+          {filteredOrders?.map((order) => (
+            <View
+              style={{
+                marginVertical: 10,
+                backgroundColor: "white",
+                padding: 10,
+              }}
+              key={order.orderid}
+            >
+              <Text
+                style={{ fontSize: 15, fontWeight: "500", paddingVertical: 5 }}
+              >
+                Order: {order.orderid}
+              </Text>
+              {order.OrderDetails?.map((detail, index) => (
+                <View style={{ flexDirection: "row" }} key={index}>
+                  <Image
+                    source={{ uri: detail.Product.mainimg }}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      margin: 5,
+                      borderRadius: 5,
+                    }}
+                  />
+                  <View style={{ width: "80%", margin: 5 }}>
+                    <Text style={{ fontWeight: "400" }}>
+                      {detail.Product.name}
+                    </Text>
+                    <Text style={{ color: "#404040", textAlign: "right" }}>
+                      x {detail.quantity}
+                    </Text>
+                    <Text style={{ color: "#ed3c2f", textAlign: "right" }}>
+                      {detail.Product.price} $
+                    </Text>
+                  </View>
+                </View>
+              ))}
+              <Text
+                style={{
+                  paddingVertical: 5,
+                  color: "#ed3c2f",
+                }}
+              >
+                Status:{" "}
+                {order.status === "success" ? "delivered" : order.status}
+              </Text>
+              <Text
+                style={{
+                  fontWeight: "500",
+                  paddingVertical: 5,
+                }}
+              >
+                Total bill: ${order.totalmoney}
+              </Text>
+            </View>
+          ))}
+        </ScrollView>
+      </SafeAreaView>
+    );
+  } else
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color="blue" />
+      </View>
+    );
 };
 
 export default TrackingScreen;
