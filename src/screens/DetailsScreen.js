@@ -8,12 +8,47 @@ import { useTheme } from "@react-navigation/native";
 import Icons from "@expo/vector-icons/MaterialIcons";
 import { StatusBar } from "expo-status-bar";
 import BottomSheet from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ToastMessage } from "../components/CustomToastMessage";
+import { post } from "../utils/APICaller";
 
 const DetailsScreen = ({ navigation, route }) => {
-  console.log(route.params);
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const [count, setCount] = useState(1);
+
+  const postOrderDetail = async (productid) => {
+    const orderid = await AsyncStorage.getItem("orderid");
+    await post({
+      endpoint: "/orderdetail/",
+      body: {
+        quantity: count,
+        orderid: orderid,
+        productid: productid,
+      },
+    })
+      .then((response) => {
+        const data = response.data["data"];
+        return data;
+      })
+      .catch((error) => {
+        console.log(quantity, error);
+        return null;
+      });
+  };
+
+  const addToCart = async (orderid) => {
+    try {
+      ToastMessage(
+        "success",
+        "Add successful",
+        "Mua đê mua đê, mại zô mại zô!!! 😘"
+      );
+      await postOrderDetail(orderid);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={{ flex: 1 }}>
@@ -21,7 +56,7 @@ const DetailsScreen = ({ navigation, route }) => {
         source={{
           uri: route.params.mainimg,
         }}
-        style={{ flex: 1 }}
+        style={{ flex: 1, resizeMode: "center" }}
       />
 
       <SafeAreaView
@@ -46,10 +81,10 @@ const DetailsScreen = ({ navigation, route }) => {
               justifyContent: "center",
               borderRadius: 52,
               borderWidth: 1,
-              borderColor: "#fff",
+              borderColor: "#000",
             }}
           >
-            <Icons name="arrow-back" size={24} color={"#fff"} />
+            <Icons name="arrow-back" size={24} color={"#000"} />
           </TouchableOpacity>
           <View style={{ flex: 1 }} />
           <TouchableOpacity
@@ -60,10 +95,10 @@ const DetailsScreen = ({ navigation, route }) => {
               justifyContent: "center",
               borderRadius: 52,
               borderWidth: 1,
-              borderColor: "#fff",
+              borderColor: "#000",
             }}
           >
-            <Icons name="favorite-border" size={24} color={"#fff"} />
+            <Icons name="favorite-border" size={24} color={"#000"} />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -107,7 +142,7 @@ const DetailsScreen = ({ navigation, route }) => {
                   marginTop: 4,
                 }}
               >
-                3.0 (250K Reviews)
+                3.0 (22 Reviews)
               </Text>
             </View>
 
@@ -144,7 +179,11 @@ const DetailsScreen = ({ navigation, route }) => {
                 {count}
               </Text>
               <TouchableOpacity
-                onPress={() => setCount((count) => Math.min(10, count + 1))}
+                onPress={() =>
+                  setCount((count) =>
+                    Math.min(route.params.quantity, count + 1)
+                  )
+                }
                 style={{
                   backgroundColor: colors.card,
                   width: 34,
@@ -170,10 +209,10 @@ const DetailsScreen = ({ navigation, route }) => {
                   textTransform: "uppercase",
                 }}
               >
-                Model is 6'1'', Size M
+                Dòng sản phẩm :
               </Text>
               <Text style={{ color: colors.text, opacity: 0.5 }}>
-                Size guide
+                {route.params.Category.catename}
               </Text>
             </View>
           </View>
@@ -191,7 +230,7 @@ const DetailsScreen = ({ navigation, route }) => {
             </Text>
             <Text
               style={{ color: colors.text, opacity: 0.75 }}
-              numberOfLines={3}
+              numberOfLines={7}
             >
               {route.params.detail}
             </Text>
@@ -208,7 +247,7 @@ const DetailsScreen = ({ navigation, route }) => {
               <Text
                 style={{ color: colors.text, fontSize: 18, fontWeight: "600" }}
               >
-                {(route.params.price).toLocaleString()}&#x20AB;
+                ${route.params.price.toLocaleString()}
               </Text>
             </View>
 
@@ -223,6 +262,7 @@ const DetailsScreen = ({ navigation, route }) => {
                 flexDirection: "row",
                 padding: 12,
               }}
+              onPress={() => addToCart(route.params.productid)}
             >
               <Text
                 style={{

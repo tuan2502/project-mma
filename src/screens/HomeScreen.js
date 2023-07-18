@@ -26,9 +26,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { ToastMessage } from "../components/CustomToastMessage";
 
-const AVATAR_URL =
-  "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
-
 const HomeScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const bottomSheetModalRef = useRef(null);
@@ -39,6 +36,7 @@ const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState("");
   const [filteredProductData, setFilteredProductData] = useState([]);
   const [randomItems, setRandomItems] = useState([]);
+  const [information, setInformation] = useState(information);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -53,17 +51,28 @@ const HomeScreen = ({ navigation }) => {
         setCategories(response.data["data"]);
       })
       .catch((error) => {
-        console.log('2',error);
-
+        console.log("2", error);
       });
   }, []);
+
   useEffect(() => {
-    const handleBackButton = () => true;
-    BackHandler.addEventListener("hardwareBackPress", handleBackButton);
-    return () => {
-      BackHandler.removeEventListener("hardwareBackPress", handleBackButton);
-    };
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getInformation();
+      // console.log('hello')
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const getInformation = async () => {
+    await get({ endpoint: "/customer/4f639884-3ecb-470b-a785-788c73" })
+      .then((response) => {
+        const data = response.data["data"];
+        setInformation(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     get({ endpoint: "/product/" })
@@ -83,7 +92,7 @@ const HomeScreen = ({ navigation }) => {
       })
       .catch((error) => {
         console.log(error);
-        console.log('3',error);
+        console.log("3", error);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -107,7 +116,7 @@ const HomeScreen = ({ navigation }) => {
                 latestItem.orderid.toString()
               );
             } catch (e) {
-              console.log('4',error);
+              console.log("4", error);
               return null;
             }
             return;
@@ -119,7 +128,7 @@ const HomeScreen = ({ navigation }) => {
         }
       })
       .catch((error) => {
-        console.log('5',error);
+        console.log("5", error);
         return null;
       });
   };
@@ -136,7 +145,7 @@ const HomeScreen = ({ navigation }) => {
         return data;
       })
       .catch((error) => {
-        console.log('6',error);
+        console.log("6", error);
         return null;
       });
   };
@@ -157,7 +166,7 @@ const HomeScreen = ({ navigation }) => {
         return data;
       })
       .catch((error) => {
-        console.log('1',error);
+        console.log("1", error);
         return null;
       });
   };
@@ -165,7 +174,11 @@ const HomeScreen = ({ navigation }) => {
   //thêm sản phẩm vào Cart
   const addToCart = async (orderid) => {
     try {
-      ToastMessage('success', 'Add successful', 'Mua đê mua đê, mại zô mại zô!!! 😘');
+      ToastMessage(
+        "success",
+        "Add successful",
+        "Mua đê mua đê, mại zô mại zô!!! 😘"
+      );
       await postOrderDetail(orderid);
     } catch (error) {
       console.log(error);
@@ -212,7 +225,10 @@ const HomeScreen = ({ navigation }) => {
         >
           <Image
             source={{
-              uri: AVATAR_URL,
+              uri: `${
+                information?.image ??
+                "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+              }`,
             }}
             style={{ width: 52, aspectRatio: 1, borderRadius: 52 }}
             resizeMode="cover"
@@ -289,85 +305,18 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* Search Bar Section */}
         <View style={{ flexDirection: "row", paddingHorizontal: 24, gap: 12 }}>
-          <TouchableOpacity
-            style={{
-              flex: 1,
-              height: 52,
-              borderRadius: 52,
-              borderWidth: 1,
-              borderColor: colors.border,
-              alignItems: "center",
-              paddingHorizontal: 24,
-              flexDirection: "row",
-              gap: 12,
-            }}
-          >
-            <Icons
-              name="search"
-              size={24}
-              color={colors.text}
-              style={{ opacity: 0.5 }}
-            />
-            <TextInput
-              style={{
-                flex: 1,
-                fontSize: 16,
-                color: colors.text,
-                opacity: 0.5,
-              }}
-              placeholder="Search"
-              value={searchText}
-              onChangeText={(text) => setSearchText(text)}
-            />
-          </TouchableOpacity>
+          <Text style={{ fontSize: 20, fontWeight: "700", color: colors.text }}>
+            Popular
+          </Text>
         </View>
-
-        {/* Categories Section */}
-        <FlatList
-          data={categories}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 16,
-            gap: 12,
-          }}
-          renderItem={({ item, index }) => {
-            const isSelected = item.catename === selectedCategory;
-            return (
-              <TouchableOpacity
-                onPress={() => setCategoryIndex(index)}
-                style={{
-                  backgroundColor: isSelected ? colors.primary : colors.card,
-                  paddingHorizontal: 20,
-                  paddingVertical: 12,
-                  borderRadius: 100,
-                  borderWidth: isSelected ? 0 : 1,
-                  borderColor: colors.border,
-                }}
-              >
-                <Text
-                  style={{
-                    color: isSelected ? colors.background : colors.text,
-                    fontWeight: "600",
-                    fontSize: 14,
-                    opacity: isSelected ? 1 : 0.5,
-                  }}
-                >
-                  {item.catename}
-                </Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
 
         {/* Mesonary */}
         {isLoading ? (
           <ActivityIndicator />
         ) : (
           <MasonryList
-            data={filteredProductData}
+            data={filteredProductData.slice(2)}
             numColumns={2}
             contentContainerStyle={{ paddingHorizontal: 12 }}
             showsVerticalScrollIndicator={false}
@@ -397,22 +346,26 @@ const HomeScreen = ({ navigation }) => {
                     ]}
                   >
                     <View style={{ flexDirection: "row", gap: 8, padding: 4 }}>
-                      <Text
-                        style={{
-                          flex: 1,
-                          fontSize: 16,
-                          fontWeight: "600",
-                          color: "#fff",
-                          textShadowColor: "rgba(0,0,0,0.2)",
-                          textShadowOffset: {
-                            height: 1,
-                            width: 0,
-                          },
-                          textShadowRadius: 4,
-                        }}
+                      <TouchableOpacity
+                        style={{ flex: 1 }}
+                        onPress={() => navigation.navigate("Details", item)}
                       >
-                        {item.name}
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            fontWeight: "600",
+                            color: "#fff",
+                            textShadowColor: "rgba(0,0,0,0.2)",
+                            textShadowOffset: {
+                              height: 1,
+                              width: 0,
+                            },
+                            textShadowRadius: 4,
+                          }}
+                        >
+                          {item.name}
+                        </Text>
+                      </TouchableOpacity>
                       <View
                         style={{
                           backgroundColor: colors.card,
