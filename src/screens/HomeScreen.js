@@ -11,6 +11,7 @@ import {
   TextInput,
   Alert,
   ToastAndroid,
+  BackHandler,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
@@ -25,19 +26,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { ToastMessage } from "../components/CustomToastMessage";
 
-const AVATAR_URL =
-  "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
-
 const HomeScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const bottomSheetModalRef = useRef(null);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [productData, setProductData] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState("");
-  const [filteredProductData, setFilteredProductData] = useState([]);
   const [randomItems, setRandomItems] = useState([]);
+  const [information, setInformation] = useState(information);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -48,22 +43,32 @@ const HomeScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
+
+
   useEffect(() => {
-    get({ endpoint: "/category/" })
+    const unsubscribe = navigation.addListener("focus", () => {
+      getInformation();
+      // console.log('hello')
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const getInformation = async () => {
+    await get({ endpoint: "/customer/4f639884-3ecb-470b-a785-788c73" })
       .then((response) => {
-        setCategories(response.data["data"]);
+        const data = response.data["data"];
+        setInformation(data);
       })
       .catch((error) => {
-
+        console.log(error);
       });
-  }, []);
+  };
 
   useEffect(() => {
     get({ endpoint: "/product/" })
       .then((response) => {
         const products = response.data["data"];
         setProductData(products);
-        setFilteredProductData(products); 
         const randomIndexes = [];
         while (randomIndexes.length < 3) {
           const randomIndex = Math.floor(Math.random() * products.length);
@@ -116,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
         }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("5", error);
         return null;
       });
   };
@@ -133,7 +138,7 @@ const HomeScreen = ({ navigation }) => {
         return data;
       })
       .catch((error) => {
-        console.log('6',error);
+        console.log("6", error);
         return null;
       });
   };
@@ -154,7 +159,7 @@ const HomeScreen = ({ navigation }) => {
         return data;
       })
       .catch((error) => {
-        console.log('1',error);
+        console.log("1", error);
         return null;
       });
   };
@@ -162,244 +167,175 @@ const HomeScreen = ({ navigation }) => {
   //thêm sản phẩm vào Cart
   const addToCart = async (orderid) => {
     try {
-      ToastMessage('success', 'Add successful', 'Mua đê mua đê, mại zô mại zô!!! 😘');
+      ToastMessage(
+        "success",
+        "Add successful",
+        "Mua đê mua đê, mại zô mại zô!!! 😘"
+      );
       await postOrderDetail(orderid);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleSearch = useCallback(() => {
-    const filteredData = productData.filter((item) => {
-      const categoryMatch =
-        selectedCategory === null ||
-        selectedCategory === "" ||
-        item.Category.catename === selectedCategory;
-      const nameMatch = item.name
-        .toLowerCase()
-        .includes(searchText.toLowerCase());
-
-      return categoryMatch && nameMatch;
-    });
-
-    setFilteredProductData(filteredData);
-  }, [productData, selectedCategory, searchText]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [handleSearch]);
-
-  const setCategoryIndex = (index) => {
-    const selectedCategory = categories[index]?.catename || null;
-    setSelectedCategory(selectedCategory);
-    setSearchText("");
-  };
-
   return (
-    <>
-      <ScrollView>
-        <SafeAreaView style={{ paddingVertical: 24, gap: 24 }}>
-          {/* Header Section */}
-          <View
+    <ScrollView>
+      <SafeAreaView style={{ paddingVertical: 12, gap: 24 }}>
+        {/* Header Section */}
+        <View
+          style={{
+            paddingHorizontal: 24,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <Image
+            source={{
+              uri: `${
+                information?.image ??
+                "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+              }`,
+            }}
+            style={{ width: 52, aspectRatio: 1, borderRadius: 52 }}
+            resizeMode="cover"
+          />
+          <View style={{ flex: 1 }}>
+            <Text
+              style={{
+                fontSize: 18,
+                fontWeight: "600",
+                marginBottom: 8,
+                color: colors.text,
+              }}
+              numberOfLines={1}
+            >
+              Welcome Back 👋
+            </Text>
+            <Text
+              style={{ color: colors.text, opacity: 0.75 }}
+              numberOfLines={1}
+            >
+              Discover gift that suit your style
+            </Text>
+          </View>
+          <TouchableOpacity
             style={{
-              paddingHorizontal: 24,
-              flexDirection: "row",
+              width: 52,
+              aspectRatio: 1,
               alignItems: "center",
-              gap: 8,
+              justifyContent: "center",
+              borderRadius: 52,
+              borderWidth: 1,
+              borderColor: colors.border,
             }}
           >
-            <Image
-              source={{
-                uri: AVATAR_URL,
-              }}
-              style={{ width: 52, aspectRatio: 1, borderRadius: 52 }}
-              resizeMode="cover"
-            />
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "600",
-                  marginBottom: 8,
-                  color: colors.text,
-                }}
-                numberOfLines={1}
-              >
-                Welcome Back 👋
-              </Text>
-              <Text
-                style={{ color: colors.text, opacity: 0.75 }}
-                numberOfLines={1}
-              >
-                Discover gift that suit your style
-              </Text>
-            </View>
-            <TouchableOpacity
+            <Icons
+              name="shopping-cart"
               onPress={() => {
                 navigation.navigate("Cart");
               }}
-              style={{
-                width: 52,
-                aspectRatio: 1,
-                alignItems: "center",
-                justifyContent: "center",
-                borderRadius: 52,
-                borderWidth: 1,
-                borderColor: colors.border,
-              }}
-            >
-              <Icons name="shopping-cart" size={24} color={colors.text} />
-            </TouchableOpacity>
-          </View>
+              size={24}
+              color={colors.text}
+            />
+          </TouchableOpacity>
+        </View>
 
-          {/* Grid Collection View */}
-          <View style={{ paddingHorizontal: 24 }}>
-            {/* Title bar */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 12,
-              }}
-            >
-              <Text
-                style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
-              >
-                New Collections
-              </Text>
-            </View>
-            <View style={{ flexDirection: "row", height: 200, gap: 12 }}>
-              {randomItems.map((item) => (
-                <Card
-                  key={item.productid} // Add key prop with unique value
-                  onPress={() => {
-                    navigation.navigate("Details", {
-                      id: item.productid,
-                    });
-                  }}
-                  price={item.price}
-                  imageUrl={item.mainimg}
-                />
-              ))}
-            </View>
-          </View>
-
-          {/* Search Bar Section */}
+        {/* Grid Collection View */}
+        <View style={{ paddingHorizontal: 24 }}>
+          {/* Title bar */}
           <View
-            style={{ flexDirection: "row", paddingHorizontal: 24, gap: 12 }}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
           >
+            <Text
+              style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
+            >
+              New Collections
+            </Text>
+          </View>
+          <View style={{ flexDirection: "row", height: 200, gap: 12 }}>
+            {randomItems.map((item) => (
+              <Card
+                key={item.productid} // Add key prop with unique value
+                onPress={() => {
+                  navigation.navigate("Details", item);
+                }}
+                price={item.price}
+                imageUrl={item.mainimg}
+              />
+            ))}
+          </View>
+        </View>
+        <View style={{ paddingHorizontal: 24 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
+          >
+            <Text
+              style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
+            >
+              Popular
+            </Text>
             <TouchableOpacity
-              style={{
-                flex: 1,
-                height: 52,
-                borderRadius: 52,
-                borderWidth: 1,
-                borderColor: colors.border,
-                alignItems: "center",
-                paddingHorizontal: 24,
-                flexDirection: "row",
-                gap: 12,
+              onPress={() => {
+                navigation.navigate("Products");
               }}
             >
-              <Icons
-                name="search"
-                size={24}
-                color={colors.text}
-                style={{ opacity: 0.5 }}
-              />
-              <TextInput
-                style={{
-                  flex: 1,
-                  fontSize: 16,
-                  color: colors.text,
-                  opacity: 0.5,
-                }}
-                placeholder="Search"
-                value={searchText}
-                onChangeText={(text) => setSearchText(text)}
-              />
+              <Text style={{ color: colors.primary }}>See All</Text>
             </TouchableOpacity>
           </View>
+        </View>
 
-          {/* Categories Section */}
-          <FlatList
-            data={categories}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{
-              paddingHorizontal: 16,
-              gap: 12,
-            }}
-            renderItem={({ item, index }) => {
-              const isSelected = item.catename === selectedCategory;
-              return (
-                <TouchableOpacity
-                  onPress={() => setCategoryIndex(index)}
+        {/* Mesonary */}
+        {isLoading ? (
+          <ActivityIndicator />
+        ) : (
+          <MasonryList
+          data={productData.slice(0, 7)} 
+            numColumns={2}
+            contentContainerStyle={{ paddingHorizontal: 12 }}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, i }) => (
+              <View style={{ padding: 6 }}>
+                <View
                   style={{
-                    backgroundColor: isSelected ? colors.primary : colors.card,
-                    paddingHorizontal: 20,
-                    paddingVertical: 12,
-                    borderRadius: 100,
-                    borderWidth: isSelected ? 0 : 1,
-                    borderColor: colors.border,
+                    aspectRatio: i === 0 ? 1 : 2 / 3,
+                    position: "relative",
+                    overflow: "hidden",
+                    borderRadius: 24,
                   }}
                 >
-                  <Text
-                    style={{
-                      color: isSelected ? colors.background : colors.text,
-                      fontWeight: "600",
-                      fontSize: 14,
-                      opacity: isSelected ? 1 : 0.5,
+                  <Image
+                    source={{
+                      uri: item.mainimg,
                     }}
-                  >
-                    {item.catename}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }}
-          />
-
-          {/* Mesonary */}
-          {isLoading ? (
-            <ActivityIndicator />
-          ) : (
-            <MasonryList
-              data={filteredProductData}
-              numColumns={2}
-              contentContainerStyle={{ paddingHorizontal: 12 }}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item, i }) => (
-                <View style={{ padding: 6 }}>
+                    resizeMode="cover"
+                    style={StyleSheet.absoluteFill}
+                  />
                   <View
-                    style={{
-                      aspectRatio: i === 0 ? 1 : 2 / 3,
-                      position: "relative",
-                      overflow: "hidden",
-                      borderRadius: 24,
-                    }}
+                    style={[
+                      StyleSheet.absoluteFill,
+                      {
+                        padding: 12,
+                      },
+                    ]}
                   >
-                    <Image
-                      source={{
-                        uri: item.mainimg,
-                      }}
-                      resizeMode="cover"
-                      style={StyleSheet.absoluteFill}
-                    />
-                    <View
-                      style={[
-                        StyleSheet.absoluteFill,
-                        {
-                          padding: 12,
-                        },
-                      ]}
-                    >
-                      <View
-                        style={{ flexDirection: "row", gap: 8, padding: 4 }}
+                    <View style={{ flexDirection: "row", gap: 8, padding: 4 }}>
+                      <TouchableOpacity
+                        style={{ flex: 1 }}
+                        onPress={() => navigation.navigate("Details", item)}
                       >
                         <Text
                           style={{
-                            flex: 1,
                             fontSize: 16,
                             fontWeight: "600",
                             color: "#fff",
@@ -413,91 +349,91 @@ const HomeScreen = ({ navigation }) => {
                         >
                           {item.name}
                         </Text>
-                        <View
-                          style={{
-                            backgroundColor: colors.card,
-                            borderRadius: 100,
-                            height: 32,
-                            aspectRatio: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <Icons
-                            name="favorite-border"
-                            size={20}
-                            color={colors.text}
-                          />
-                        </View>
-                      </View>
-                      <View style={{ flex: 1 }} />
-                      <BlurView
+                      </TouchableOpacity>
+                      <View
                         style={{
-                          flexDirection: "row",
-                          backgroundColor: "rgba(0,0,0,0.5)",
-                          alignItems: "center",
-                          padding: 6,
+                          backgroundColor: colors.card,
                           borderRadius: 100,
-                          overflow: "hidden",
+                          height: 32,
+                          aspectRatio: 1,
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
-                        intensity={20}
                       >
-                        <Text
-                          style={{
-                            flex: 1,
-                            fontSize: 16,
-                            fontWeight: "600",
-                            color: "#fff",
-                            marginLeft: 8,
-                          }}
-                          numberOfLines={1}
-                        >
-                          ${item.price}
-                        </Text>
-                        <TouchableOpacity
+                        <Icons
+                          name="favorite-border"
+                          size={20}
+                          color={colors.text}
+                        />
+                      </View>
+                    </View>
+                    <View style={{ flex: 1 }} />
+                    <BlurView
+                      style={{
+                        flexDirection: "row",
+                        backgroundColor: "rgba(0,0,0,0.5)",
+                        alignItems: "center",
+                        padding: 6,
+                        borderRadius: 100,
+                        overflow: "hidden",
+                      }}
+                      intensity={20}
+                    >
+                      <Text
+                        style={{
+                          flex: 1,
+                          fontSize: 16,
+                          fontWeight: "600",
+                          color: "#fff",
+                          marginLeft: 8,
+                        }}
+                        numberOfLines={1}
+                      >
+                        ${item.price}
+                      </Text>
+                      <TouchableOpacity
+                        style={{
+                          paddingHorizontal: 12,
+                          paddingVertical: 8,
+                          borderRadius: 100,
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <Icons
+                          name="add-shopping-cart"
+                          size={18}
+                          color="#000"
                           onPress={() => {
                             addToCart(item.productid);
                           }}
-                          style={{
-                            paddingHorizontal: 12,
-                            paddingVertical: 8,
-                            borderRadius: 100,
-                            backgroundColor: "#fff",
-                          }}
-                        >
-                          <Icons
-                            name="add-shopping-cart"
-                            size={18}
-                            color="#000"
-                          />
-                        </TouchableOpacity>
-                      </BlurView>
-                    </View>
+                        />
+                      </TouchableOpacity>
+                    </BlurView>
                   </View>
                 </View>
-              )}
-              onEndReachedThreshold={0.1}
-            />
-          )}
-        </SafeAreaView>
+              </View>
+            )}
+            onEndReachedThreshold={0.1}
+          />
+        )}
+      </SafeAreaView>
 
-        <BottomSheetModal
-          snapPoints={["85%"]}
-          index={0}
-          ref={bottomSheetModalRef}
-          backdropComponent={(props) => <CustomBackdrop {...props} />}
-          backgroundStyle={{
-            borderRadius: 24,
-            backgroundColor: colors.card,
-          }}
-          handleIndicatorStyle={{
-            backgroundColor: colors.primary,
-          }}
-        >
-          <FilterView />
-        </BottomSheetModal>
-      </ScrollView>
-    </>
+      <BottomSheetModal
+        snapPoints={["85%"]}
+        index={0}
+        ref={bottomSheetModalRef}
+        backdropComponent={(props) => <CustomBackdrop {...props} />}
+        backgroundStyle={{
+          borderRadius: 24,
+          backgroundColor: colors.card,
+        }}
+        handleIndicatorStyle={{
+          backgroundColor: colors.primary,
+        }}
+      >
+        <FilterView />
+      </BottomSheetModal>
+    </ScrollView>
   );
 };
 

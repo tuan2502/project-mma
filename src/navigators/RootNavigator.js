@@ -8,6 +8,7 @@ import ProfileScreen from "../screens/Profile/ProfileScreen";
 import LoginScreen from "../screens/Login/LoginScreen";
 import RegisterScreen from "../screens/Register/RegisterScreen";
 import CartScreen from "../screens/Cart/CartScreen";
+import ProductsList from "../screens/ProductList/ProductListScreen";
 
 const RootStack = createNativeStackNavigator();
 
@@ -38,6 +39,13 @@ const RootNavigator = () => {
       <RootStack.Screen
         name="Details"
         component={DetailsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
+        name="Products"
+        component={ProductsList}
         options={{
           headerShown: false,
         }}
