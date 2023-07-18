@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -12,7 +10,6 @@ import {
   View,
 } from "react-native";
 import { post } from "../../utils/APICaller";
-import { useNavigation, useRoute } from "@react-navigation/core";
 
 const SizeBox = ({ height }) => {
   return <View style={{ marginBottom: height }}></View>;
