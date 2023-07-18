@@ -27,57 +27,60 @@ const RootNavigator = () => {
   console.log("Root:", token);
 
   return (
-    <RootStack.Navigator initialRouteName="Login">
-      {!token ? (
-        <>
-          <RootStack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{
-              headerShown: false,
-              unmountOnBlur: true,
-            }}
-          />
-          <RootStack.Screen
-            name="Register"
-            component={RegisterScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </>
+    <RootStack.Navigator
+      initialRouteName="Login"
+      screenOptions={{ unmountOnBlur: true }}
+    >
+      {/* {!token ? (
+        <> */}
+      <RootStack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+          unmountOnBlur: true,
+        }}
+      />
+      <RootStack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      {/* </>
       ) : (
-        <>
-          <RootStack.Screen
-            name="TabsStack"
-            component={TabsNavigator}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <RootStack.Screen
-            name="Details"
-            component={DetailsScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <RootStack.Screen
-            name="Tracking"
-            component={TrackingScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <RootStack.Screen
-            name="Cart"
-            component={CartScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </>
-      )}
+        <> */}
+      <RootStack.Screen
+        name="TabsStack"
+        component={TabsNavigator}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
+        name="Details"
+        component={DetailsScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
+        name="Tracking"
+        component={TrackingScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <RootStack.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      {/* </>
+      )}  */}
     </RootStack.Navigator>
   );
 };

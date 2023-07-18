@@ -35,7 +35,6 @@ const TabsNavigator = () => {
         component={ProfileScreen}
         options={{
           headerShown: false,
-          unmountOnBlur: true,
         }}
       />
     </TabsStack.Navigator>

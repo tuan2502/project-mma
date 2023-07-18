@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
+  BackHandler,
   DevSettings,
   Keyboard,
   KeyboardAvoidingView,
@@ -30,6 +31,12 @@ const LoginScreen = ({ navigation }) => {
     setPassword(event.nativeEvent.text);
   };
 
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress");
+
+    return () => backHandler.remove();
+  }, [navigation]);
+
   const handleSubmit = async () => {
     post({
       endpoint: `/login`,
@@ -42,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
       .then((response) => {
         const saveToken = storeToken(response.data.token);
         if (saveToken) {
-          
+          navigation.navigate("TabsStack", { screen: "Home" });
         }
       })
       .catch((error) => {

@@ -13,6 +13,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { get } from "../../utils/APICaller";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = ({ navigation }) => {
   const [information, setInformation] = useState(information);
@@ -54,7 +55,10 @@ const ProfileScreen = ({ navigation }) => {
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image
                 source={{
-                  uri: `${information?.image ?? AVATAR_URL}`,
+                  uri: `${
+                    information?.image ??
+                    "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                  }`,
                 }}
                 style={{
                   width: 100,
@@ -264,8 +268,10 @@ const ProfileScreen = ({ navigation }) => {
 export default ProfileScreen;
 
 const FloatButton = () => {
+  const navigation = useNavigation();
   const logout = async () => {
     await AsyncStorage.removeItem("LOGIN_TOKEN");
+    navigation.navigate("Login");
   };
 
   return (
