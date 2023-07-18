@@ -29,6 +29,8 @@ const TrackingScreen = ({
     "cancel",
   ]);
   const [id, setId] = useState("4f639884-3ecb-470b-a785-788c73");
+  const [selectedStatus, setSelectedStatus] = useState(statusInput);
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   useEffect(() => {
     get({ endpoint: `/order/${id}` })
@@ -43,6 +45,21 @@ const TrackingScreen = ({
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    if (selectedStatus === "all") {
+      setFilteredOrders(orders);
+    } else {
+      const filteredData = orders.filter(
+        (item) => item.status === selectedStatus
+      );
+      setFilteredOrders(filteredData);
+    }
+  }, [selectedStatus, orders]);
+
+  const handleStatusItemClick = (statusItem) => {
+    setSelectedStatus(statusItem);
+  };
 
   if (orders.length > 0) {
     return (
@@ -84,72 +101,26 @@ const TrackingScreen = ({
             Order Details
           </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: 30,
-            padding: 10,
-          }}
-        >
-          <Pressable
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              navigation.navigate("Tracking", {
-                statusInput: "pending",
-              });
-            }}
-          >
-            <Text>Pending</Text>
-          </Pressable>
-          <Pressable
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              navigation.navigate("Tracking", {
-                statusInput: "packaging",
-              });
-            }}
-          >
-            <Text>Packaging</Text>
-          </Pressable>
-          <Pressable
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              navigation.navigate("Tracking", {
-                statusInput: "delivering",
-              });
-            }}
-          >
-            <Text>Delivering</Text>
-          </Pressable>
-          <Pressable
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={() => {
-              navigation.navigate("Tracking", {
-                statusInput: "pending",
-              });
-            }}
-          >
-            <Text>Canceled</Text>
-          </Pressable>
+        <View style={{ flexDirection: "row" }}>
+          {status.map((statusItem) => (
+            <Pressable
+              key={statusItem}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: selectedStatus === statusItem ? "pink" : null,
+                paddingVertical: 10,
+              }}
+              onPress={() => handleStatusItemClick(statusItem)}
+            >
+              <Text>{statusItem === "success" ? "delivered" : statusItem}</Text>
+            </Pressable>
+          ))}
         </View>
+
         <ScrollView style={{ backgroundColor: "#e8e8e8" }}>
-          {orders?.map((order) => (
+          {filteredOrders?.map((order) => (
             <View
               style={{
                 marginVertical: 10,
@@ -193,7 +164,8 @@ const TrackingScreen = ({
                   color: "#ed3c2f",
                 }}
               >
-                Status: {order.status}
+                Status:{" "}
+                {order.status === "success" ? "delivered" : order.status}
               </Text>
               <Text
                 style={{
