@@ -24,14 +24,14 @@ const TabsNavigator = () => {
         }}
       />
       <TabsStack.Screen
-        name="Payment"
+        name="List"
         component={ProductsScreen}
         options={{
           headerShown: false,
         }}
       />
       <TabsStack.Screen
-        name="Notifications"
+        name="Tracking"
         component={Example}
         options={{
           headerShown: false,

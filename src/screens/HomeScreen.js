@@ -41,7 +41,9 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getOrder();
+      setTimeout(() => {
+        getOrder();
+      }, 1000);
     });
     return unsubscribe;
   }, [navigation]);
@@ -52,7 +54,6 @@ const HomeScreen = ({ navigation }) => {
         setCategories(response.data["data"]);
       })
       .catch((error) => {
-        console.log('2',error);
 
       });
   }, []);
@@ -75,10 +76,12 @@ const HomeScreen = ({ navigation }) => {
       })
       .catch((error) => {
         console.log(error);
-        console.log('3',error);
       })
       .finally(() => setLoading(false));
   }, []);
+  
+  // hàm kiểm tra xem phần tử cuối cùng có phải cart hay không? 
+
 
   // fetch Last Order
   const getOrder = async () => {
@@ -91,6 +94,7 @@ const HomeScreen = ({ navigation }) => {
         const data = response.data["data"];
 
         if (data.length > 0) {
+          // data.filter(item => {item.status === 'cart'  ; return console.log(item.status === 'cart')});
           const latestItem = data[0];
           if (latestItem.status === "cart") {
             try {
@@ -99,19 +103,20 @@ const HomeScreen = ({ navigation }) => {
                 latestItem.orderid.toString()
               );
             } catch (e) {
-              console.log('4',error);
+              console.log(error);
               return null;
             }
             return;
           } else {
             createCart();
+            return;
           }
         } else if (data.length === 0) {
           createCart();
         }
       })
       .catch((error) => {
-        console.log('5',error);
+        console.log(error);
         return null;
       });
   };

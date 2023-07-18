@@ -26,8 +26,6 @@ import { ToastMessage } from "../../components/CustomToastMessage";
 import CustomBackdrop from "../../components/CustomBackdrop";
 import { COLOURS } from "../../database/Database";
 
-const AVATAR_URL =
-  "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
 
 const ProductsList = ({ navigation }) => {
   const { colors } = useTheme();
@@ -75,7 +73,6 @@ const ProductsList = ({ navigation }) => {
         setRandomItems(randomItems);
       })
       .catch((error) => {
-        console.log(error);
         console.log('3',error);
       })
       .finally(() => setLoading(false));

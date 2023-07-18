@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { get } from "../../utils/APICaller";
+const AVATAR_URL =
+  "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
 
 const ProfileScreen = ({ navigation }) => {
   const [information, setInformation] = useState(information);
@@ -19,7 +21,6 @@ const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getInformation();
-      // console.log('hello')
     });
     return unsubscribe;
   }, [navigation]);
@@ -53,10 +54,7 @@ const ProfileScreen = ({ navigation }) => {
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image
                 source={{
-                  uri: `${
-                    information?.image ??
-                    "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-                  }`,
+                  uri: `${information?.image ?? AVATAR_URL}`,
                 }}
                 style={{
                   width: 100,
