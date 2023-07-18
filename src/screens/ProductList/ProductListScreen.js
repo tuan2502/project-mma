@@ -72,7 +72,7 @@ const ProductsList = ({ navigation }) => {
         setRandomItems(randomItems);
       })
       .catch((error) => {
-        console.log('3',error);
+        console.log("3", error);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -200,38 +200,23 @@ const ProductsList = ({ navigation }) => {
   };
 
   return (
-    <ScrollView>
-      <SafeAreaView style={{ gap: 24 }}>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView style={{ gap: 12 }}>
         {/* Header Section */}
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            padding: 20,
-            paddingTop: 0,
+            paddingHorizontal: 20,
             gap: 8,
           }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{
-              width: 52,
-              aspectRatio: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              borderRadius: 52,
-              borderWidth: 1,
-              borderColor: "black",
-            }}
-          >
-            <Icons name="arrow-back" size={24} color={"black"} />
-          </TouchableOpacity>
           <Text
             style={{
               flex: 1,
-
+              marginLeft: 52,
               textAlign: "center",
-              fontSize: 18,
+              fontSize: 16,
               color: COLOURS.black,
               fontWeight: "600",
             }}
@@ -245,12 +230,9 @@ const ProductsList = ({ navigation }) => {
               aspectRatio: 1,
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: 52,
-              borderWidth: 1,
-              borderColor: "black",
             }}
           >
-            <Icons name="shopping-cart" size={24} color={"black"} />
+            <Icons name="shopping-cart" size={22} color={"black"} />
           </TouchableOpacity>
         </View>
 
@@ -289,161 +271,172 @@ const ProductsList = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Categories Section */}
-        <FlatList
-          data={[...categories, { catename: "Show All" }]}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 16,
-            gap: 12,
-          }}
-          renderItem={({ item, index }) => {
-            const isSelected = item.catename === selectedCategory;
-            return (
-              <TouchableOpacity
-                onPress={() => setCategoryIndex(index)}
-                style={{
-                  backgroundColor: isSelected ? colors.primary : colors.card,
-                  paddingHorizontal: 20,
-                  paddingVertical: 12,
-                  borderRadius: 100,
-                  borderWidth: isSelected ? 0 : 1,
-                  borderColor: colors.border,
-                }}
-              >
-                <Text
+        <View>
+          {/* Categories Section */}
+          <FlatList
+            data={[...categories, { catename: "Show All" }]}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              gap: 12,
+            }}
+            renderItem={({ item, index }) => {
+              const isSelected = item.catename === selectedCategory;
+              return (
+                <TouchableOpacity
+                  onPress={() => setCategoryIndex(index)}
                   style={{
-                    color: isSelected ? colors.background : colors.text,
-                    fontWeight: "600",
-                    fontSize: 14,
-                    opacity: isSelected ? 1 : 0.5,
+                    backgroundColor: isSelected ? colors.primary : colors.card,
+                    paddingHorizontal: 20,
+                    paddingVertical: 12,
+                    borderRadius: 100,
+                    borderWidth: isSelected ? 0 : 1,
+                    borderColor: colors.border,
                   }}
                 >
-                  {item.catename}
-                </Text>
-              </TouchableOpacity>
-            );
-          }}
-        />
-
-        {/* Mesonary */}
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <MasonryList
-            data={filteredProductData}
-            numColumns={2}
-            contentContainerStyle={{ paddingHorizontal: 12 }}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, i }) => (
-              <View style={{ padding: 6 }}>
-                <View
-                  style={{
-                    aspectRatio: i === 0 ? 1 : 2 / 3,
-                    position: "relative",
-                    overflow: "hidden",
-                    borderRadius: 24,
-                  }}
-                >
-                  <Image
-                    source={{
-                      uri: item.mainimg,
+                  <Text
+                    style={{
+                      color: isSelected ? colors.background : colors.text,
+                      fontWeight: "600",
+                      fontSize: 14,
+                      opacity: isSelected ? 1 : 0.5,
                     }}
-                    resizeMode="cover"
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <View
-                    style={[
-                      StyleSheet.absoluteFill,
-                      {
-                        padding: 12,
-                      },
-                    ]}
                   >
-                    <View style={{ flexDirection: "row", gap: 8, padding: 4 }}>
-                      <Text
-                        style={{
-                          flex: 1,
-                          fontSize: 16,
-                          fontWeight: "600",
-                          color: "#fff",
-                          textShadowColor: "rgba(0,0,0,0.2)",
-                          textShadowOffset: {
-                            height: 1,
-                            width: 0,
-                          },
-                          textShadowRadius: 4,
-                        }}
-                      >
-                        {item.name}
-                      </Text>
-                      <View
-                        style={{
-                          backgroundColor: colors.card,
-                          borderRadius: 100,
-                          height: 32,
-                          aspectRatio: 1,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Icons
-                          name="favorite-border"
-                          size={20}
-                          color={colors.text}
-                        />
-                      </View>
-                    </View>
-                    <View style={{ flex: 1 }} />
-                    <BlurView
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        alignItems: "center",
-                        padding: 6,
-                        borderRadius: 100,
-                        overflow: "hidden",
+                    {item.catename}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+
+        <ScrollView>
+          {/* Mesonary */}
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <MasonryList
+              data={filteredProductData}
+              numColumns={2}
+              contentContainerStyle={{ paddingHorizontal: 12 }}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, i }) => (
+                <View style={{ padding: 6 }}>
+                  <View
+                    style={{
+                      aspectRatio: i === 0 ? 1 : 2 / 3,
+                      position: "relative",
+                      overflow: "hidden",
+                      borderRadius: 24,
+                    }}
+                  >
+                    <Image
+                      source={{
+                        uri: item.mainimg,
                       }}
-                      intensity={20}
+                      resizeMode="cover"
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <View
+                      style={[
+                        StyleSheet.absoluteFill,
+                        {
+                          padding: 12,
+                        },
+                      ]}
                     >
-                      <Text
-                        style={{
-                          flex: 1,
-                          fontSize: 16,
-                          fontWeight: "600",
-                          color: "#fff",
-                          marginLeft: 8,
-                        }}
-                        numberOfLines={1}
+                      <View
+                        style={{ flexDirection: "row", gap: 8, padding: 4 }}
                       >
-                        ${item.price}
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() => {
-                          addToCart(item.productid);
-                        }}
+                        <TouchableOpacity
+                          style={{ flex: 1 }}
+                          onPress={() => navigation.navigate("Details", item)}
+                        >
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontSize: 16,
+                              fontWeight: "600",
+                              color: "#fff",
+                              textShadowColor: "rgba(0,0,0,0.2)",
+                              textShadowOffset: {
+                                height: 1,
+                                width: 0,
+                              },
+                              textShadowRadius: 4,
+                            }}
+                          >
+                            {item.name}
+                          </Text>
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            backgroundColor: colors.card,
+                            borderRadius: 100,
+                            height: 32,
+                            aspectRatio: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icons
+                            name="favorite-border"
+                            size={20}
+                            color={colors.text}
+                          />
+                        </View>
+                      </View>
+                      <View style={{ flex: 1 }} />
+                      <BlurView
                         style={{
-                          paddingHorizontal: 12,
-                          paddingVertical: 8,
+                          flexDirection: "row",
+                          backgroundColor: "rgba(0,0,0,0.5)",
+                          alignItems: "center",
+                          padding: 6,
                           borderRadius: 100,
-                          backgroundColor: "#fff",
+                          overflow: "hidden",
                         }}
+                        intensity={20}
                       >
-                        <Icons
-                          name="add-shopping-cart"
-                          size={18}
-                          color="#000"
-                        />
-                      </TouchableOpacity>
-                    </BlurView>
+                        <Text
+                          style={{
+                            flex: 1,
+                            fontSize: 16,
+                            fontWeight: "600",
+                            color: "#fff",
+                            marginLeft: 8,
+                          }}
+                          numberOfLines={1}
+                        >
+                          ${item.price}
+                        </Text>
+                        <TouchableOpacity
+                          onPress={() => {
+                            addToCart(item.productid);
+                          }}
+                          style={{
+                            paddingHorizontal: 12,
+                            paddingVertical: 8,
+                            borderRadius: 100,
+                            backgroundColor: "#fff",
+                          }}
+                        >
+                          <Icons
+                            name="add-shopping-cart"
+                            size={18}
+                            color="#000"
+                          />
+                        </TouchableOpacity>
+                      </BlurView>
+                    </View>
                   </View>
                 </View>
-              </View>
-            )}
-            onEndReachedThreshold={0.1}
-          />
-        )}
+              )}
+              onEndReachedThreshold={0.1}
+            />
+          )}
+        </ScrollView>
       </SafeAreaView>
 
       <BottomSheetModal
@@ -461,7 +454,7 @@ const ProductsList = ({ navigation }) => {
       >
         <FilterView />
       </BottomSheetModal>
-    </ScrollView>
+    </View>
   );
 };
 

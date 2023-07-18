@@ -8,11 +8,12 @@ import {
   ImageBackground,
   StyleSheet,
   Pressable,
+  DevSettings,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { get } from "../../utils/APICaller";
-const AVATAR_URL =
-  "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileScreen = ({ navigation }) => {
   const [information, setInformation] = useState(information);
@@ -54,7 +55,10 @@ const ProfileScreen = ({ navigation }) => {
             <View style={{ justifyContent: "center", alignItems: "center" }}>
               <Image
                 source={{
-                  uri: `${information?.image ?? AVATAR_URL}`,
+                  uri: `${
+                    information?.image ??
+                    "https://images.unsplash.com/photo-1589656966895-2f33e7653819?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                  }`,
                 }}
                 style={{
                   width: 100,
@@ -245,7 +249,7 @@ const ProfileScreen = ({ navigation }) => {
                 }}
                 onPress={() => {
                   navigation.navigate("Tracking", {
-                    statusInput: "pending",
+                    statusInput: "success",
                   });
                 }}
               >
@@ -264,8 +268,14 @@ const ProfileScreen = ({ navigation }) => {
 export default ProfileScreen;
 
 const FloatButton = () => {
+  const navigation = useNavigation();
+  const logout = async () => {
+    await AsyncStorage.removeItem("LOGIN_TOKEN");
+    navigation.navigate("Login");
+  };
+
   return (
-    <TouchableOpacity style={styles.floatButton}>
+    <TouchableOpacity style={styles.floatButton} onPress={() => logout()}>
       <View
         style={{
           backgroundColor: "#f5f5f5",
