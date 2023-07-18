@@ -1614,6 +1614,11 @@
   "resolved" "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.14.tgz"
   "version" "1.4.14"
 
+"@jridgewell/sourcemap-codec@1.4.14":
+  version "1.4.14"
+  resolved "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.4.14.tgz"
+  integrity sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw==
+
 "@jridgewell/trace-mapping@^0.3.17", "@jridgewell/trace-mapping@^0.3.9":
   "integrity" "sha512-w+niJYzMHdd7USdiH2U6869nqhD2nbfZXND5Yp93qIbEmnDNk7PD48o+YchRVpzMU7M6jVCbenTR7PA1FLQ9pA=="
   "resolved" "https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.18.tgz"
@@ -1739,6 +1744,11 @@
   "version" "10.2.0"
   dependencies:
     "@react-native-community/cli-tools" "^10.1.1"
+    chalk "^4.1.2"
+    execa "^1.0.0"
+    fast-xml-parser "^4.0.12"
+    glob "^7.1.3"
+    ora "^5.4.1"
     "chalk" "^4.1.2"
     "execa" "^1.0.0"
     "glob" "^7.1.3"
@@ -2048,6 +2058,11 @@
   "integrity" "sha512-4VSbbcMoxc4KLjb1gs96SRmi7w4h1SF+fCoiK0XaQX62buCc1G5d0DC5bJ9xJBNPDSVCmIrcl8BiYxzjrqaaJA=="
   "resolved" "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.9.tgz"
   "version" "0.8.9"
+
+"@xmldom/xmldom@^0.8.8":
+  version "0.8.9"
+  resolved "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.9.tgz"
+  integrity sha512-4VSbbcMoxc4KLjb1gs96SRmi7w4h1SF+fCoiK0XaQX62buCc1G5d0DC5bJ9xJBNPDSVCmIrcl8BiYxzjrqaaJA==
 
 "@xmldom/xmldom@~0.7.7":
   "integrity" "sha512-JpcbUyxzrUShspIZ9uzcIuxTdE+X15sY7dCKGfXrXbQ1CqpMBfqkrNSde2dGqhlC4+EdAF+csoTCiAvYAKVKlA=="
@@ -2457,6 +2472,7 @@
   "resolved" "https://registry.npmjs.org/bplist-parser/-/bplist-parser-0.3.2.tgz"
   "version" "0.3.2"
   dependencies:
+    big-integer "1.6.x"
     "big-integer" "1.6.x"
 
 "bplist-parser@0.3.1":
@@ -5501,6 +5517,7 @@
   "resolved" "https://registry.npmjs.org/on-finished/-/on-finished-2.3.0.tgz"
   "version" "2.3.0"
   dependencies:
+    ee-first "1.1.1"
     "ee-first" "1.1.1"
 
 "on-finished@2.4.1":
@@ -5802,6 +5819,46 @@
   "resolved" "https://registry.npmjs.org/pretty-format/-/pretty-format-29.6.1.tgz"
   "version" "29.6.1"
   dependencies:
+    decode-uri-component "^0.2.2"
+    filter-obj "^1.1.0"
+    split-on-first "^1.0.0"
+    strict-uri-encode "^2.0.0"
+
+querystringify@^2.1.1:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/querystringify/-/querystringify-2.2.0.tgz"
+  integrity sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==
+
+queue-microtask@^1.2.2:
+  version "1.2.3"
+  resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
+  integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
+
+range-parser@~1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/range-parser/-/range-parser-1.2.1.tgz"
+  integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
+
+raw-body@2.5.2:
+  version "2.5.2"
+  resolved "https://registry.npmjs.org/raw-body/-/raw-body-2.5.2.tgz"
+  integrity sha512-8zGqypfENjCIqGhgXToC8aB2r7YrBX+AQAfIPs/Mlk+BtPTztOvTS01NRW/3Eh60J+a48lt8qsCzirQ6loCVfA==
+  dependencies:
+    bytes "3.1.2"
+    http-errors "2.0.0"
+    iconv-lite "0.4.24"
+    unpipe "1.0.0"
+
+rc@~1.2.7:
+  version "1.2.8"
+  resolved "https://registry.npmjs.org/rc/-/rc-1.2.8.tgz"
+  integrity sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==
+  dependencies:
+    deep-extend "^0.6.0"
+    ini "~1.3.0"
+    minimist "^1.2.0"
+    strip-json-comments "~2.0.1"
+
     "@jest/schemas" "^29.6.0"
     "ansi-styles" "^5.0.0"
     "react-is" "^18.0.0"
@@ -6714,10 +6771,15 @@
   "resolved" "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
   "version" "4.2.3"
   dependencies:
+    ansi-regex "^4.1.0"
     "emoji-regex" "^8.0.0"
     "is-fullwidth-code-point" "^3.0.0"
     "strip-ansi" "^6.0.1"
 
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
 "strip-ansi@^5.0.0", "strip-ansi@^5.2.0":
   "integrity" "sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA=="
   "resolved" "https://registry.npmjs.org/strip-ansi/-/strip-ansi-5.2.0.tgz"
