@@ -22,14 +22,18 @@ import Dialog from "react-native-dialog";
 import { Picker } from "@react-native-picker/picker";
 import { ToastMessage } from "../../components/CustomToastMessage";
 
-const CartScreen = ({ navigation }) => {
+const CartScreen = ({
+  navigation,
+  route: {
+    params: { productData },
+  },
+}) => {
   const [products, setProducts] = useState([]);
   const [cartList, setCartList] = useState();
   const [isLoading, setLoading] = useState(true);
   const [callCount, setCallCount] = useState(0);
 
   const [total, setTotal] = useState(null);
-
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getOrderList();
@@ -61,8 +65,13 @@ const CartScreen = ({ navigation }) => {
       .finally(() => setLoading(false));
   };
 
+  //giới hạn số lượng 
+  const limitQuantity = () =>{
+    // productData.filter(item =>item.)
+  }
+
   //picker quantity
-  const PickerQuantity = ({ quantity, orderid, orderdetailid }) => {
+  const PickerQuantity = ({ quantity, orderid, orderdetailid, quantityProduct }) => {
     const [country, setCountry] = useState(quantity);
     const [visible, setVisible] = useState(false);
     const [tempCountry, setTempCountry] = useState("Unknown");
@@ -103,7 +112,7 @@ const CartScreen = ({ navigation }) => {
             mode="dropdown" // Android only
             // style={styles.picker}
           >
-            {[...Array(20)].map((_, i) => {
+            {[...Array(quantityProduct)].map((_, i) => {
               const value = i + 1;
               const label = `${value}`;
               return <Picker.Item key={i} label={label} value={value} />;
@@ -135,6 +144,7 @@ const CartScreen = ({ navigation }) => {
       </View>
     );
   };
+
 
   // remove data from Cart
   const removeItemFromCart = async (orderdetailid, orderid) => {
@@ -388,6 +398,7 @@ const CartScreen = ({ navigation }) => {
                 quantity={data.quantity}
                 orderid={data.orderid}
                 orderdetailid={data.orderdetailid}
+                quantityProduct={data.Product.quantity}
               />
               {/* <View
                 style={{
@@ -443,7 +454,6 @@ const CartScreen = ({ navigation }) => {
     })
       .then((response) => {
         const data = response.data["data"];
-        getOrder();
         return data;
       })
       .catch((error) => {
