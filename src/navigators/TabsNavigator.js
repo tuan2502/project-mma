@@ -25,7 +25,7 @@ const TabsNavigator = () => {
         }}
       />
       <TabsStack.Screen
-        name="Payment"
+        name="Products"
         component={ProductsScreen}
         options={{
           headerShown: false,

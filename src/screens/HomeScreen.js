@@ -41,8 +41,6 @@ const HomeScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-
-
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getInformation();
@@ -173,7 +171,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView>
+    <View>
       <SafeAreaView style={{ paddingVertical: 12, gap: 24 }}>
         {/* Header Section */}
         <View
@@ -234,182 +232,184 @@ const HomeScreen = ({ navigation }) => {
             />
           </TouchableOpacity>
         </View>
-
-        {/* Grid Collection View */}
-        <View style={{ paddingHorizontal: 24 }}>
-          {/* Title bar */}
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 12,
-            }}
-          >
-            <Text
-              style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
-            >
-              New Collections
-            </Text>
-          </View>
-          <View style={{ flexDirection: "row", height: 200, gap: 12 }}>
-            {randomItems.map((item) => (
-              <Card
-                key={item.productid} // Add key prop with unique value
-                onPress={() => {
-                  navigation.navigate("Details", item);
-                }}
-                price={item.price}
-                imageUrl={item.mainimg}
-              />
-            ))}
-          </View>
-        </View>
-        <View style={{ paddingHorizontal: 24 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: 12,
-            }}
-          >
-            <Text
-              style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
-            >
-              Popular
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Products");
+        <ScrollView>
+          {/* Grid Collection View */}
+          <View style={{ paddingHorizontal: 24 }}>
+            {/* Title bar */}
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 12,
               }}
             >
-              <Text style={{ color: colors.primary }}>See All</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Mesonary */}
-        {isLoading ? (
-          <ActivityIndicator />
-        ) : (
-          <MasonryList
-          data={productData.slice(0, 7)} 
-            numColumns={2}
-            contentContainerStyle={{ paddingHorizontal: 12 }}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, i }) => (
-              <View style={{ padding: 6 }}>
-                <View
-                  style={{
-                    aspectRatio: i === 0 ? 1 : 2 / 3,
-                    position: "relative",
-                    overflow: "hidden",
-                    borderRadius: 24,
+              <Text
+                style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
+              >
+                New Collections
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row", height: 200, gap: 12 }}>
+              {randomItems.map((item) => (
+                <Card
+                  key={item.productid} // Add key prop with unique value
+                  onPress={() => {
+                    navigation.navigate("Details", item);
                   }}
-                >
-                  <Image
-                    source={{
-                      uri: item.mainimg,
-                    }}
-                    resizeMode="cover"
-                    style={StyleSheet.absoluteFill}
-                  />
+                  price={item.price}
+                  imageUrl={item.mainimg}
+                />
+              ))}
+            </View>
+          </View>
+          <View style={{ paddingHorizontal: 24 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: 12,
+              }}
+            >
+              <Text
+                style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
+              >
+                Popular
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Products");
+                }}
+              >
+                <Text style={{ color: colors.primary }}>See All</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* Mesonary */}
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
+            <MasonryList
+              data={productData.slice(0, 7)}
+              numColumns={2}
+              contentContainerStyle={{ paddingHorizontal: 12 }}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, i }) => (
+                <View style={{ padding: 6 }}>
                   <View
-                    style={[
-                      StyleSheet.absoluteFill,
-                      {
-                        padding: 12,
-                      },
-                    ]}
+                    style={{
+                      aspectRatio: i === 0 ? 1 : 2 / 3,
+                      position: "relative",
+                      overflow: "hidden",
+                      borderRadius: 24,
+                    }}
                   >
-                    <View style={{ flexDirection: "row", gap: 8, padding: 4 }}>
-                      <TouchableOpacity
-                        style={{ flex: 1 }}
-                        onPress={() => navigation.navigate("Details", item)}
+                    <Image
+                      source={{
+                        uri: item.mainimg,
+                      }}
+                      resizeMode="cover"
+                      style={StyleSheet.absoluteFill}
+                    />
+                    <View
+                      style={[
+                        StyleSheet.absoluteFill,
+                        {
+                          padding: 12,
+                        },
+                      ]}
+                    >
+                      <View
+                        style={{ flexDirection: "row", gap: 8, padding: 4 }}
+                      >
+                        <TouchableOpacity
+                          style={{ flex: 1 }}
+                          onPress={() => navigation.navigate("Details", item)}
+                        >
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: "600",
+                              color: "#fff",
+                              textShadowColor: "rgba(0,0,0,0.2)",
+                              textShadowOffset: {
+                                height: 1,
+                                width: 0,
+                              },
+                              textShadowRadius: 4,
+                            }}
+                          >
+                            {item.name}
+                          </Text>
+                        </TouchableOpacity>
+                        <View
+                          style={{
+                            backgroundColor: colors.card,
+                            borderRadius: 100,
+                            height: 32,
+                            aspectRatio: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Icons
+                            name="favorite-border"
+                            size={20}
+                            color={colors.text}
+                          />
+                        </View>
+                      </View>
+                      <View style={{ flex: 1 }} />
+                      <BlurView
+                        style={{
+                          flexDirection: "row",
+                          backgroundColor: "rgba(0,0,0,0.5)",
+                          alignItems: "center",
+                          padding: 6,
+                          borderRadius: 100,
+                          overflow: "hidden",
+                        }}
+                        intensity={20}
                       >
                         <Text
                           style={{
+                            flex: 1,
                             fontSize: 16,
                             fontWeight: "600",
                             color: "#fff",
-                            textShadowColor: "rgba(0,0,0,0.2)",
-                            textShadowOffset: {
-                              height: 1,
-                              width: 0,
-                            },
-                            textShadowRadius: 4,
+                            marginLeft: 8,
+                          }}
+                          numberOfLines={1}
+                        >
+                          ${item.price}
+                        </Text>
+                        <TouchableOpacity
+                          style={{
+                            paddingHorizontal: 12,
+                            paddingVertical: 8,
+                            borderRadius: 100,
+                            backgroundColor: "#fff",
                           }}
                         >
-                          {item.name}
-                        </Text>
-                      </TouchableOpacity>
-                      <View
-                        style={{
-                          backgroundColor: colors.card,
-                          borderRadius: 100,
-                          height: 32,
-                          aspectRatio: 1,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Icons
-                          name="favorite-border"
-                          size={20}
-                          color={colors.text}
-                        />
-                      </View>
+                          <Icons
+                            name="add-shopping-cart"
+                            size={18}
+                            color="#000"
+                            onPress={() => {
+                              addToCart(item.productid);
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </BlurView>
                     </View>
-                    <View style={{ flex: 1 }} />
-                    <BlurView
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        alignItems: "center",
-                        padding: 6,
-                        borderRadius: 100,
-                        overflow: "hidden",
-                      }}
-                      intensity={20}
-                    >
-                      <Text
-                        style={{
-                          flex: 1,
-                          fontSize: 16,
-                          fontWeight: "600",
-                          color: "#fff",
-                          marginLeft: 8,
-                        }}
-                        numberOfLines={1}
-                      >
-                        ${item.price}
-                      </Text>
-                      <TouchableOpacity
-                        style={{
-                          paddingHorizontal: 12,
-                          paddingVertical: 8,
-                          borderRadius: 100,
-                          backgroundColor: "#fff",
-                        }}
-                      >
-                        <Icons
-                          name="add-shopping-cart"
-                          size={18}
-                          color="#000"
-                          onPress={() => {
-                            addToCart(item.productid);
-                          }}
-                        />
-                      </TouchableOpacity>
-                    </BlurView>
                   </View>
                 </View>
-              </View>
-            )}
-            onEndReachedThreshold={0.1}
-          />
-        )}
+              )}
+              onEndReachedThreshold={0.1}
+            />
+          )}
+        </ScrollView>
       </SafeAreaView>
 
       <BottomSheetModal
@@ -427,7 +427,7 @@ const HomeScreen = ({ navigation }) => {
       >
         <FilterView />
       </BottomSheetModal>
-    </ScrollView>
+    </View>
   );
 };
 
