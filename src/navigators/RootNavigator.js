@@ -9,6 +9,7 @@ import LoginScreen from "../screens/Login/LoginScreen";
 import RegisterScreen from "../screens/Register/RegisterScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ProductsList from "../screens/ProductList/ProductListScreen";
 
 const RootStack = createNativeStackNavigator();
 
