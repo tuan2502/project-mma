@@ -22,6 +22,8 @@ import CustomBackdrop from "../components/CustomBackdrop";
 import FilterView from "../components/FilterView";
 import { get, post } from "../utils/APICaller";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
+import { ToastMessage } from "../components/CustomToastMessage";
 
 const AVATAR_URL =
   "https://images.unsplash.com/photo-1496345875659-11f7dd282d1d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2340&q=80";
@@ -39,7 +41,9 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      getOrder();
+      setTimeout(() => {
+        getOrder();
+      }, 1000);
     });
     return unsubscribe;
   }, [navigation]);
@@ -50,7 +54,6 @@ const HomeScreen = ({ navigation }) => {
         setCategories(response.data["data"]);
       })
       .catch((error) => {
-        console.log('2',error);
 
       });
   }, []);
@@ -73,10 +76,12 @@ const HomeScreen = ({ navigation }) => {
       })
       .catch((error) => {
         console.log(error);
-        console.log('3',error);
       })
       .finally(() => setLoading(false));
   }, []);
+  
+  // hàm kiểm tra xem phần tử cuối cùng có phải cart hay không? 
+
 
   // fetch Last Order
   const getOrder = async () => {
@@ -89,6 +94,7 @@ const HomeScreen = ({ navigation }) => {
         const data = response.data["data"];
 
         if (data.length > 0) {
+          // data.filter(item => {item.status === 'cart'  ; return console.log(item.status === 'cart')});
           const latestItem = data[0];
           if (latestItem.status === "cart") {
             try {
@@ -97,19 +103,20 @@ const HomeScreen = ({ navigation }) => {
                 latestItem.orderid.toString()
               );
             } catch (e) {
-              console.log('4',error);
+              console.log(error);
               return null;
             }
             return;
           } else {
             createCart();
+            return;
           }
         } else if (data.length === 0) {
           createCart();
         }
       })
       .catch((error) => {
-        console.log('5',error);
+        console.log(error);
         return null;
       });
   };
@@ -154,12 +161,11 @@ const HomeScreen = ({ navigation }) => {
 
   //thêm sản phẩm vào Cart
   const addToCart = async (orderid) => {
-    await postOrderDetail(orderid);
-    if (Platform.OS === "android") {
-      ToastAndroid.show("Item Added Successfully to cart", ToastAndroid.SHORT);
-    } else if (Platform.OS === "ios") {
-      // Thông báo cho iOS
-      Alert.alert("Item Added Successfully to cart");
+    try {
+      ToastMessage('success', 'Add successful', 'Mua đê mua đê, mại zô mại zô!!! 😘');
+      await postOrderDetail(orderid);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -190,7 +196,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView>
+    <>
       <ScrollView>
         <SafeAreaView style={{ paddingVertical: 24, gap: 24 }}>
           {/* Header Section */}
@@ -229,6 +235,9 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             </View>
             <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Cart");
+              }}
               style={{
                 width: 52,
                 aspectRatio: 1,
@@ -239,14 +248,7 @@ const HomeScreen = ({ navigation }) => {
                 borderColor: colors.border,
               }}
             >
-              <Icons
-                name="shopping-cart"
-                onPress={() => {
-                  navigation.navigate("Cart");
-                }}
-                size={24}
-                color={colors.text}
-              />
+              <Icons name="shopping-cart" size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -453,6 +455,9 @@ const HomeScreen = ({ navigation }) => {
                           ${item.price}
                         </Text>
                         <TouchableOpacity
+                          onPress={() => {
+                            addToCart(item.productid);
+                          }}
                           style={{
                             paddingHorizontal: 12,
                             paddingVertical: 8,
@@ -464,9 +469,6 @@ const HomeScreen = ({ navigation }) => {
                             name="add-shopping-cart"
                             size={18}
                             color="#000"
-                            onPress={() => {
-                              addToCart(item.productid);
-                            }}
                           />
                         </TouchableOpacity>
                       </BlurView>
@@ -495,7 +497,7 @@ const HomeScreen = ({ navigation }) => {
           <FilterView />
         </BottomSheetModal>
       </ScrollView>
-    </SafeAreaView>
+    </>
   );
 };
 

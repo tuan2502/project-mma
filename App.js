@@ -11,6 +11,7 @@ import "react-native-gesture-handler"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { SafeAreaProvider } from "react-native-safe-area-context"
+import Toast from "react-native-toast-message"
 
 export default function App() {
 
@@ -50,6 +51,7 @@ export default function App() {
           <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
         </NavigationContainer>
       </GestureHandlerRootView>
+      <Toast/>
     </SafeAreaProvider>
   )
 }

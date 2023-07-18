@@ -19,7 +19,8 @@ import { get, put, remove } from "../../utils/APICaller";
 import { formatCurrency } from "../../components/Format";
 
 import Dialog from "react-native-dialog";
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from "@react-native-picker/picker";
+import { ToastMessage } from "../../components/CustomToastMessage";
 
 const CartScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -60,27 +61,11 @@ const CartScreen = ({ navigation }) => {
       .finally(() => setLoading(false));
   };
 
-  //tăng giảm số lượng
-  // const handleIncreaseQuantity = (e) => {
-  //   const quantity = e.target.value;
-  //   quantity++;
-  //   e.target.value = quantity;
-  // };
-
-  // const handleDecreaseQuantity = (e) => {
-  //   const quantity = e.target.value;
-  //   if (quantity > 1) {
-  //     quantity--;
-  //     e.target.value = quantity;
-  //   }
-  // };
-
   //picker quantity
   const PickerQuantity = ({ quantity, orderid, orderdetailid }) => {
     const [country, setCountry] = useState(quantity);
     const [visible, setVisible] = useState(false);
     const [tempCountry, setTempCountry] = useState("Unknown");
-
 
     const PutQuantity = async (newQuantity) => {
       await put({
@@ -116,7 +101,7 @@ const CartScreen = ({ navigation }) => {
             selectedValue={tempCountry}
             onValueChange={(value, index) => setTempCountry(value)}
             mode="dropdown" // Android only
-            style={styles.picker}
+            // style={styles.picker}
           >
             {[...Array(20)].map((_, i) => {
               const value = i + 1;
@@ -138,22 +123,21 @@ const CartScreen = ({ navigation }) => {
             }}
           />
         </Dialog.Container>
-        <Text
-          style={styles.text}
+        <TouchableOpacity
+          style={styles.touch}
           onPress={() => {
             setTempCountry(country);
             setVisible(true);
           }}
         >
-          {country}
-        </Text>
+          <Text style={styles.text}>{country}</Text>
+        </TouchableOpacity>
       </View>
     );
   };
 
   // remove data from Cart
   const removeItemFromCart = async (orderdetailid, orderid) => {
-
     await remove({
       endpoint: `/orderdetail/${orderdetailid}`,
       params: { orderdetailid: orderdetailid },
@@ -162,25 +146,122 @@ const CartScreen = ({ navigation }) => {
       .then(async (response) => {
         const data = response.data["data"];
         getOrderList();
+        ToastMessage('success','Remove successful!', 'Rảnh nhớ thêm zô lại nha thí chủ 😉');
         return data;
       })
       .catch((error) => {
-        console.log(error);
+        ToastMessage('error','Error!', error);
         return null;
       });
   };
-  
+
+  //dialog delete
+  const RemoveDialog = ({ data }) => {
+  const [visible, setVisible] = useState(false);
+
+    return (
+      <>
+        <Dialog.Container visible={visible}>
+          <Dialog.Title>Remove Allert!</Dialog.Title>
+          <Dialog.Description>
+            Thí chủ đã chắc chắn xóa đi chưa? 😒
+          </Dialog.Description>
+          <Dialog.Button
+            label="Cancel"
+            onPress={() => {
+              setVisible(false);
+            }}
+          />
+          <Dialog.Button
+            label="Remove"
+            onPress={() => {
+              setVisible(false);
+              removeItemFromCart(data.orderdetailid, data.orderid);
+            }}
+          />
+        </Dialog.Container>
+        <TouchableOpacity
+          key={data.productid}
+          onPress={() => {
+            setVisible(true);
+          }}
+          style={{ borderRadius: 10, overflow: "hidden" }}
+        >
+          <MaterialCommunityIcons
+            name="delete-outline"
+            style={{
+              fontSize: 16,
+              color: COLOURS.white,
+              backgroundColor: "#Ed4245",
+              padding: 8,
+            }}
+          />
+        </TouchableOpacity>
+      </>
+    );
+  };
+
+  //DialogCheckout
+  const DialogCheckout = ({ cartList }) => {
+  const [visible, setVisible] = useState(false);
+
+    return (
+      <>
+        <Dialog.Container visible={visible}>
+          <Dialog.Title>Order Confirm</Dialog.Title>
+          <Dialog.Description>
+            Thiếu gì không? Mua nhá? Chốt nhá?👌
+          </Dialog.Description>
+          <Dialog.Button
+            label="Cancel"
+            onPress={() => {
+              setVisible(false);
+            }}
+          />
+          <Dialog.Button
+            label="Order"
+            onPress={() => {
+              setVisible(false);
+              cartList.totalmoney != 0
+              ? checkOut(cartList.orderid)
+              : Alert.alert("Chưa có hàng kìa thí chủ")
+            }}
+          />
+        </Dialog.Container>
+        <TouchableOpacity
+          onPress={() => setVisible(true)}
+          style={{
+            width: "86%",
+            height: "90%",
+            backgroundColor: "#000",
+            borderRadius: 20,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: "500",
+              letterSpacing: 1,
+              color: COLOURS.white,
+              textTransform: "uppercase",
+            }}
+          >
+            CHECKOUT ({formatCurrency(cartList.totalmoney)})
+          </Text>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
   // checkout
   const checkOut = async (orderid) => {
     const tracking = "pending";
     putStatus(orderid, tracking.toLowerCase());
 
-    if (Platform.OS === "android") {
-      ToastAndroid.show("Items will be Deliverd SOON!", ToastAndroid.SHORT);
-    } else if (Platform.OS === "ios") {
-      // Thông báo cho iOS
-      Alert.alert("Items will be Deliverd SOON!");
-    }
+    ToastMessage('success','Order successful!', 'Cảm ơn thí chủ đã mua hàng, ghé lại sớm nha! 😍');
+
     navigation.navigate("Home");
   };
 
@@ -318,24 +399,7 @@ const CartScreen = ({ navigation }) => {
                 />
               </View> */}
             </View>
-            <TouchableOpacity
-              key={data.productid}
-              onPress={() =>
-                removeItemFromCart(data.orderdetailid, data.orderid)
-              }
-              style={{ borderRadius: 10, overflow: "hidden" }}
-            >
-              <MaterialCommunityIcons
-                name="delete-outline"
-                style={{
-                  fontSize: 16,
-
-                  color: COLOURS.white,
-                  backgroundColor: "#Ed4245",
-                  padding: 8,
-                }}
-              />
-            </TouchableOpacity>
+            <RemoveDialog data={data} />
           </View>
         </View>
       </TouchableOpacity>
@@ -388,15 +452,20 @@ const CartScreen = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              {/* <TouchableOpacity onPress={() => navigation.goBack()} >
-              <MaterialCommunityIcons name='chevron-left' style={{
-                fontSize: 18,
-                color: COLOURS.backgroundDark,
-                padding: 12,
-                backgroundColor: COLOURS.backgroundLight,
-                borderRadius: 12,
-              }} />
-            </TouchableOpacity> */}
+              <TouchableOpacity
+                style={{ left: "-280%" }}
+                onPress={() => navigation.goBack()}
+              >
+                <MaterialCommunityIcons
+                  name="chevron-left"
+                  style={{
+                    fontSize: 22,
+                    color: COLOURS.backgroundDark,
+                    padding: 12,
+                    borderRadius: 12,
+                  }}
+                />
+              </TouchableOpacity>
               <Text
                 style={{
                   fontSize: 14,
@@ -406,9 +475,8 @@ const CartScreen = ({ navigation }) => {
               >
                 Order Details
               </Text>
-              <View></View>
             </View>
-            <Text
+            {/* <Text
               style={{
                 fontSize: 20,
                 color: COLOURS.black,
@@ -420,7 +488,7 @@ const CartScreen = ({ navigation }) => {
               }}
             >
               My Cart
-            </Text>
+            </Text> */}
             <View style={{ paddingRight: 16 }}>
               {products
                 ? products.map((data, index) => renderProduct(data, index))
@@ -472,40 +540,14 @@ const CartScreen = ({ navigation }) => {
           <View
             style={{
               position: "absolute",
-              bottom: 10,
+              bottom: 15,
               height: "8%",
               width: "100%",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <TouchableOpacity
-              onPress={() =>
-                cartList.totalmoney != 0
-                  ? checkOut(cartList.orderid)
-                  : Alert.alert("Có hàng đi rồi thanh toán nhó!")
-              }
-              style={{
-                width: "86%",
-                height: "90%",
-                backgroundColor: "#000",
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: "500",
-                  letterSpacing: 1,
-                  color: COLOURS.white,
-                  textTransform: "uppercase",
-                }}
-              >
-                CHECKOUT ({formatCurrency(cartList.totalmoney)})
-              </Text>
-            </TouchableOpacity>
+            <DialogCheckout cartList={cartList} />
           </View>
         </SafeAreaView>
       )}
@@ -515,22 +557,25 @@ const CartScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   screen: {
-    width: 50,
-    backgroundColor: '#e1ecf7',
+    justifyContent: "center",
+    alignItems: "center",
+    width: 70,
+    height: 30,
+    backgroundColor: "#e1ecf7",
     borderRadius: 5,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
   },
+  touch: {
+    width: 70,
+  },
+
   text: {
-    fontSize: 20,
-    textAlign: "center",
+    fontSize: 16,
+    textAlign:  "center",
   },
-  picker: {
-    // backgroundColor: "white",
-    marginVertical: 30,
-    width: "100%",
-    padding: 10,
-  },
+
+
 });
 
 export default CartScreen;
