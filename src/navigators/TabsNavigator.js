@@ -2,10 +2,8 @@ import { View } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
-import Icons from "@expo/vector-icons/MaterialIcons";
 import CustomBottomTabs from "../components/CustomBottomTabs";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
-import CartScreen from "../screens/Cart/CartScreen";
 import ProductsScreen from "../screens/ProductList/ProductListScreen";
 
 const TabsStack = createBottomTabNavigator();
@@ -23,18 +21,13 @@ const TabsNavigator = () => {
         component={HomeScreen}
         options={{
           headerShown: false,
-          tabBarIcon(props) {
-            return <Icons name="home" {...props} />;
-          },
         }}
       />
       <TabsStack.Screen
         name="Payment"
         component={ProductsScreen}
         options={{
-          tabBarIcon(props) {
-            return <Icons name="tracking" {...props} />;
-          },
+          headerShown: false,
         }}
       />
       <TabsStack.Screen
@@ -42,9 +35,6 @@ const TabsNavigator = () => {
         component={Example}
         options={{
           headerShown: false,
-          tabBarIcon(props) {
-            return <Icons name="notifications" {...props} />;
-          },
         }}
       />
       <TabsStack.Screen
@@ -52,9 +42,6 @@ const TabsNavigator = () => {
         component={ProfileScreen}
         options={{
           headerShown: false,
-          tabBarIcon(props) {
-            return <Icons name="person" {...props} />;
-          },
         }}
       />
     </TabsStack.Navigator>
