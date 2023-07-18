@@ -31,6 +31,7 @@ const ProductsList = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [showAllSelected, setShowAllSelected] = useState(false);
   const [productData, setProductData] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
@@ -186,8 +187,16 @@ const ProductsList = ({ navigation }) => {
   }, [handleSearch]);
 
   const setCategoryIndex = (index) => {
-    const selectedCategory = categories[index]?.catename || null;
-    setSelectedCategory(selectedCategory);
+    if (index === categories.length) {
+      // Show All option selected
+      setSelectedCategory(null);
+    } else if (categories[index]?.catename === selectedCategory) {
+      // Selected category is already active, disable the filter
+      setSelectedCategory(null);
+    } else {
+      const selectedCategory = categories[index]?.catename || null;
+      setSelectedCategory(selectedCategory);
+    }
     setSearchText("");
   };
 
@@ -283,7 +292,7 @@ const ProductsList = ({ navigation }) => {
 
         {/* Categories Section */}
         <FlatList
-          data={categories}
+          data={[...categories, { catename: "Show All" }]}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{

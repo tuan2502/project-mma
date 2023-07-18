@@ -29,12 +29,8 @@ import { ToastMessage } from "../components/CustomToastMessage";
 const HomeScreen = ({ navigation }) => {
   const { colors } = useTheme();
   const bottomSheetModalRef = useRef(null);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [productData, setProductData] = useState([]);
   const [isLoading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState("");
-  const [filteredProductData, setFilteredProductData] = useState([]);
   const [randomItems, setRandomItems] = useState([]);
   const [information, setInformation] = useState(information);
 
@@ -45,15 +41,7 @@ const HomeScreen = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {
-    get({ endpoint: "/category/" })
-      .then((response) => {
-        setCategories(response.data["data"]);
-      })
-      .catch((error) => {
-        console.log("2", error);
-      });
-  }, []);
+
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -79,7 +67,6 @@ const HomeScreen = ({ navigation }) => {
       .then((response) => {
         const products = response.data["data"];
         setProductData(products);
-        setFilteredProductData(products);
         const randomIndexes = [];
         while (randomIndexes.length < 3) {
           const randomIndex = Math.floor(Math.random() * products.length);
@@ -185,32 +172,6 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
-  const handleSearch = useCallback(() => {
-    const filteredData = productData.filter((item) => {
-      const categoryMatch =
-        selectedCategory === null ||
-        selectedCategory === "" ||
-        item.Category.catename === selectedCategory;
-      const nameMatch = item.name
-        .toLowerCase()
-        .includes(searchText.toLowerCase());
-
-      return categoryMatch && nameMatch;
-    });
-
-    setFilteredProductData(filteredData);
-  }, [productData, selectedCategory, searchText]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [handleSearch]);
-
-  const setCategoryIndex = (index) => {
-    const selectedCategory = categories[index]?.catename || null;
-    setSelectedCategory(selectedCategory);
-    setSearchText("");
-  };
-
   return (
     <ScrollView>
       <SafeAreaView style={{ paddingVertical: 12, gap: 24 }}>
@@ -304,11 +265,28 @@ const HomeScreen = ({ navigation }) => {
             ))}
           </View>
         </View>
-
-        <View style={{ flexDirection: "row", paddingHorizontal: 24, gap: 12 }}>
-          <Text style={{ fontSize: 20, fontWeight: "700", color: colors.text }}>
-            Popular
-          </Text>
+        <View style={{ paddingHorizontal: 24 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 12,
+            }}
+          >
+            <Text
+              style={{ fontSize: 20, fontWeight: "700", color: colors.text }}
+            >
+              Popular
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Products");
+              }}
+            >
+              <Text style={{ color: colors.primary }}>See All</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Mesonary */}
@@ -316,7 +294,7 @@ const HomeScreen = ({ navigation }) => {
           <ActivityIndicator />
         ) : (
           <MasonryList
-            data={filteredProductData.slice(2)}
+          data={productData.slice(0, 7)} 
             numColumns={2}
             contentContainerStyle={{ paddingHorizontal: 12 }}
             showsVerticalScrollIndicator={false}
