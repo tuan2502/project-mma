@@ -8,9 +8,11 @@ import {
   ImageBackground,
   StyleSheet,
   Pressable,
+  DevSettings,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { get } from "../../utils/APICaller";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileScreen = ({ navigation }) => {
   const [information, setInformation] = useState(information);
@@ -266,8 +268,12 @@ const ProfileScreen = ({ navigation }) => {
 export default ProfileScreen;
 
 const FloatButton = () => {
+  const logout = async () => {
+    await AsyncStorage.removeItem("LOGIN_TOKEN");
+  };
+
   return (
-    <TouchableOpacity style={styles.floatButton}>
+    <TouchableOpacity style={styles.floatButton} onPress={() => logout()}>
       <View
         style={{
           backgroundColor: "#f5f5f5",

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Alert,
+  DevSettings,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -12,7 +13,7 @@ import {
   View,
 } from "react-native";
 import { post } from "../../utils/APICaller";
-import { useNavigation, useRoute } from "@react-navigation/core";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SizeBox = ({ height }) => {
   return <View style={{ marginBottom: height }}></View>;
@@ -29,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
     setPassword(event.nativeEvent.text);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     post({
       endpoint: `/login`,
       body: {
@@ -39,12 +40,25 @@ const LoginScreen = ({ navigation }) => {
       },
     })
       .then((response) => {
-        navigation.navigate("TabsStack", { screen: "Home" });
+        const saveToken = storeToken(response.data.token);
+        if (saveToken) {
+          
+        }
       })
       .catch((error) => {
         alert(`Something went wrong, you should check again`);
       });
   };
+
+  const storeToken = async (token) => {
+    try {
+      await AsyncStorage.setItem("LOGIN_TOKEN", JSON.stringify(token));
+      return;
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+  };
+
   return (
     <View style={styles.root}>
       <SafeAreaView style={styles.safeAreaView}>

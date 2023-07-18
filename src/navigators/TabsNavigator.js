@@ -15,6 +15,7 @@ const TabsNavigator = () => {
         tabBarShowLabel: false,
       }}
       tabBar={(props) => <CustomBottomTabs {...props} />}
+      initialRouteName="Home"
     >
       <TabsStack.Screen
         name="Home"
@@ -42,6 +43,7 @@ const TabsNavigator = () => {
         component={ProfileScreen}
         options={{
           headerShown: false,
+          unmountOnBlur: true,
         }}
       />
     </TabsStack.Navigator>
