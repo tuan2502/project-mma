@@ -72,8 +72,7 @@ const ProductsList = ({ navigation }) => {
         setRandomItems(randomItems);
       })
       .catch((error) => {
-        console.log(error);
-        console.log("3", error);
+        console.log('3',error);
       })
       .finally(() => setLoading(false));
   }, []);
