@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   BackHandler,
-  DevSettings,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,

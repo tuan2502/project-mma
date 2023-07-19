@@ -40,7 +40,6 @@ const TrackingScreen = ({
 
   useEffect(() => {
     if (id.length > 0) {
-      console.log(id, typeof id, id.length);
       fetchOrders();
     }
   }, [id]);
@@ -254,13 +253,12 @@ const TrackingScreen = ({
         </ScrollView>
       </SafeAreaView>
     );
-  } else {
+  } else
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="blue" />
       </View>
     );
-  }
 };
 
 export default TrackingScreen;
