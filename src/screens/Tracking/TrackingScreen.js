@@ -44,7 +44,7 @@ const TrackingScreen = ({
       .catch((error) => {
         console.log(error);
       });
-  }, [statusInput]);
+  }, []);
 
   useEffect(() => {
     if (selectedStatus === "all") {

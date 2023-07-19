@@ -24,7 +24,7 @@ const RootNavigator = () => {
     getToken();
   });
 
-  console.log("Root:", token);
+  console.log("Root: 1", token);
 
   return (
     <RootStack.Navigator
