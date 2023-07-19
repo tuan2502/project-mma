@@ -24,8 +24,6 @@ const RootNavigator = () => {
     getToken();
   });
 
-  console.log("Root: 1", token);
-
   return (
     <RootStack.Navigator
       initialRouteName="Login"

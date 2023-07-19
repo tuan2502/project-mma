@@ -4,15 +4,15 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  ToastAndroid,
-  FlatList,
   SafeAreaView,
   Pressable,
   ActivityIndicator,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import React, { useEffect, useState, useCallback } from "react";
-import { get, remove, post, put } from "../../utils/APICaller";
+import { get } from "../../utils/APICaller";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwtDecode from "jwt-decode";
 
 const TrackingScreen = ({
   navigation,
@@ -28,25 +28,24 @@ const TrackingScreen = ({
     "success",
     "cancel",
   ]);
-  const [id, setId] = useState("4f639884-3ecb-470b-a785-788c73");
+  const [id, setId] = useState("");
   const [selectedStatus, setSelectedStatus] = useState(statusInput);
   const [filteredOrders, setFilteredOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    get({ endpoint: `/order/${id}` })
-      .then((response) => {
-        let data = response.data.data;
-        data = data.filter(
-          (item) => item.status !== "cart" && item.customerid === id
-        );
-        setOrder(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    setLoading(true);
+    getToken();
   }, []);
 
   useEffect(() => {
+    if (id.length > 0) {
+      fetchOrders();
+    }
+  }, [id]);
+
+  useEffect(() => {
+    setLoading(true);
     if (selectedStatus === "all") {
       setFilteredOrders(orders);
     } else {
@@ -54,6 +53,7 @@ const TrackingScreen = ({
         (item) => item.status === selectedStatus
       );
       setFilteredOrders(filteredData);
+      setLoading(false);
     }
   }, [selectedStatus, orders]);
 
@@ -61,7 +61,55 @@ const TrackingScreen = ({
     setSelectedStatus(statusItem);
   };
 
-  if (orders.length > 0) {
+  const fetchOrders = async () => {
+    try {
+      const response = await get({ endpoint: `/order/${id}` });
+      let data = response.data.data;
+      const checkLength = data.length;
+      data = data.filter((item) => item.status !== "cart");
+      setOrder(data);
+      if (checkLength > 0 && orders.length === 0) {
+        setLoading(false);
+      } else {
+        checkOrders;
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const checkOrders = () => {
+    if (orders.length > 0) {
+      setLoading(false);
+    } else {
+      setTimeout(checkOrders, 100); // Chờ 100ms trước khi kiểm tra lại
+    }
+  };
+
+  const getToken = async () => {
+    try {
+      const tokenString = await AsyncStorage.getItem("LOGIN_TOKEN");
+      let token = JSON.parse(tokenString);
+      token = jwtDecode(token);
+
+      const checkId = () => {
+        if (token.customerid !== undefined) {
+          setId(token.customerid);
+          if (id.length > 0) {
+          }
+        } else {
+          setTimeout(checkId, 100);
+        }
+      };
+
+      checkId();
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+  };
+
+  if (!loading) {
     return (
       <SafeAreaView
         style={{
@@ -128,6 +176,17 @@ const TrackingScreen = ({
             </Pressable>
           ))}
         </View>
+        {filteredOrders.length === 0 && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text>No orders available for the selected status.</Text>
+          </View>
+        )}
 
         <ScrollView style={{ backgroundColor: "#e8e8e8" }}>
           {filteredOrders?.map((order) => (
@@ -140,7 +199,11 @@ const TrackingScreen = ({
               key={order.orderid}
             >
               <Text
-                style={{ fontSize: 15, fontWeight: "500", paddingVertical: 5 }}
+                style={{
+                  fontSize: 15,
+                  fontWeight: "500",
+                  paddingVertical: 5,
+                }}
               >
                 Order: {order.orderid}
               </Text>
