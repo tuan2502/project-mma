@@ -10,6 +10,7 @@ import RegisterScreen from "../screens/Register/RegisterScreen";
 import CartScreen from "../screens/Cart/CartScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProductsList from "../screens/ProductList/ProductListScreen";
+import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 
 const RootStack = createNativeStackNavigator();
 
@@ -75,6 +76,15 @@ const RootNavigator = () => {
         component={CartScreen}
         options={{
           headerShown: false,
+        }}
+      />
+
+      <RootStack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{
+          headerShown: true,
+          headerTitle: 'Edit Profile',
         }}
       />
       {/* </>
