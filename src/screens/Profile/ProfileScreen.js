@@ -8,9 +8,9 @@ import {
   ImageBackground,
   StyleSheet,
   Pressable,
-  DevSettings,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { get } from "../../utils/APICaller";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
@@ -70,6 +70,7 @@ const ProfileScreen = ({ navigation }) => {
                   zIndex: 2,
                 }}
               />
+
             </View>
             <View style={{ marginTop: 60 }}>
               <Text
@@ -82,6 +83,23 @@ const ProfileScreen = ({ navigation }) => {
               >
                 {information.name}
               </Text>
+              <TouchableOpacity
+                onPress={() => {navigation.navigate('EditProfile', {information})}}
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "absolute",
+                  right: '25%',
+                  zIndex: 99,
+                  backgroundColor: "#000",
+                  width: 30,
+                  height: 30,
+                  borderRadius: 30,
+                }}
+              >
+                <MaterialIcons name="edit" size={20} color="white" />
+              </TouchableOpacity>
               <Text style={{ textAlign: "center", color: "#00000099" }}>
                 #{information.username}
               </Text>

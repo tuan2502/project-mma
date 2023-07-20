@@ -237,7 +237,8 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("Cart", { productData });
+              // console.log(information)
+              navigation.navigate("Cart", { information });
             }}
             style={{
               width: 52,

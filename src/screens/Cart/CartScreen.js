@@ -17,6 +17,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { SafeAreaView } from "react-native-safe-area-context";
 import { get, put, post, remove } from "../../utils/APICaller";
 import { formatCurrency } from "../../components/Format";
+import { Divider } from 'react-native-elements';
 
 import Dialog from "react-native-dialog";
 import { Picker } from "@react-native-picker/picker";
@@ -25,7 +26,7 @@ import { ToastMessage } from "../../components/CustomToastMessage";
 const CartScreen = ({
   navigation,
   route: {
-    params: { productData },
+    params: { information },
   },
 }) => {
   const [products, setProducts] = useState([]);
@@ -533,6 +534,7 @@ const CartScreen = ({
             </View>
 
             <View>
+              
               <View
                 style={{
                   paddingHorizontal: 16,
@@ -552,6 +554,51 @@ const CartScreen = ({
                   Order Info
                 </Text>
 
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text>Orderer</Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: "500",
+                      color: COLOURS.black,
+                    }}
+                  >
+                    {information.name}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text>Delivery address</Text>
+                  <Text
+                    style={{
+                      flex: 1,
+                    justifyContent: "flex-end",
+                      
+                      fontSize: 14,
+                      fontWeight: "500",
+                      color: COLOURS.black,
+                      marginTop: 15,
+                      marginLeft: 80,
+                      // overflow: 'wrap',
+                    }}
+                    numberOfLines={2} 
+                  >
+                    {information.address}
+                  </Text>
+                </View>
+                <Divider style={{marginVertical: 20}}/>
                 <View
                   style={{
                     flexDirection: "row",
