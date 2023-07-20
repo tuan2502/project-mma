@@ -13,19 +13,14 @@ const EditProfileScreen = ({
     params: { information },
   },
 }) => {
-
   const [name, setName] = useState(information.name);
   const [email, setEmail] = useState(information.email);
   const [phone, setPhone] = useState(information.phone);
   const [address, setAddress] = useState(information.address);
 
   const handleSave = () => {
-    if(!name || !email || !phone || !address){
-      ToastMessage(
-        "error",
-        "Invalid input",
-        "Please enter a valid input!"
-      );
+    if (!name || !email || !phone || !address) {
+      ToastMessage("error", "Invalid input", "Please enter a valid input!");
       setName(information.name);
       setEmail(information.email);
       setPhone(information.phone);
@@ -41,11 +36,9 @@ const EditProfileScreen = ({
       return;
     }
     PutProfile(name, email, phone, address);
-    
   };
 
   const PutProfile = async (newName, newEmail, newPhone, newAddress) => {
-    
     const uid = "4f639884-3ecb-470b-a785-788c73";
     await put({
       endpoint: `/customer/${uid}`,
@@ -59,8 +52,12 @@ const EditProfileScreen = ({
     })
       .then((response) => {
         const data = response.data["data"];
-        ToastMessage('info','Update Information', 'Profile Updated Successfully!')
-        navigation.navigate('Profile')
+        ToastMessage(
+          "info",
+          "Update Information",
+          "Profile Updated Successfully!"
+        );
+        navigation.navigate("Profile");
         return data;
       })
       .catch((error) => {
@@ -106,7 +103,6 @@ const EditProfileScreen = ({
               }
             }}
             clearButtonMode="while-editing"
-
           />
         </View>
         <View style={styles.boxInput}>
@@ -118,7 +114,6 @@ const EditProfileScreen = ({
             value={phone}
             onChangeText={setPhone}
             clearButtonMode="while-editing"
-
           />
         </View>
         <View style={styles.boxInput}>
@@ -130,10 +125,11 @@ const EditProfileScreen = ({
             value={address}
             onChangeText={setAddress}
             clearButtonMode="while-editing"
-
           />
         </View>
-        <Button title="Save" onPress={handleSave} />
+        <View style={styles.buttonUpdate}>
+          <Button color="white" title="Update" onPress={handleSave} />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -142,19 +138,26 @@ const EditProfileScreen = ({
 export default EditProfileScreen;
 
 const styles = StyleSheet.create({
-    container: {
-        marginHorizontal: 20,
-    },
+  container: {
+    marginHorizontal: 20,
+  },
 
-    boxInput: {
-      flexDirection: 'row',
-      height: 40,
-      borderBottomColor: 'gray',
-      borderBottomWidth: 1,
-      margin: 10,
-      padding: 10,
-    },
+  boxInput: {
+    flexDirection: "row",
+    height: 40,
+    borderBottomColor: "gray",
+    borderBottomWidth: 1,
+    margin: 10,
+    padding: 10,
+  },
 
-    textInput:{marginLeft: 10,width: '90%'}
-
+  textInput: { marginLeft: 10, width: "90%" },
+  buttonUpdate: {
+    backgroundColor: "#000",
+    color: "white",
+    marginTop: 20,
+    marginHorizontal: "35%",
+    fontWeight: 500,
+    borderRadius: 10,
+  },
 });

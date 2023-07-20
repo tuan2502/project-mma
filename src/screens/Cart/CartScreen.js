@@ -17,7 +17,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { SafeAreaView } from "react-native-safe-area-context";
 import { get, put, post, remove } from "../../utils/APICaller";
 import { formatCurrency } from "../../components/Format";
-import { Divider } from 'react-native-elements';
+import { Divider } from "react-native-elements";
 
 import Dialog from "react-native-dialog";
 import { Picker } from "@react-native-picker/picker";
@@ -66,13 +66,18 @@ const CartScreen = ({
       .finally(() => setLoading(false));
   };
 
-  //giới hạn số lượng 
-  const limitQuantity = () =>{
+  //giới hạn số lượng
+  const limitQuantity = () => {
     // productData.filter(item =>item.)
-  }
+  };
 
   //picker quantity
-  const PickerQuantity = ({ quantity, orderid, orderdetailid, quantityProduct }) => {
+  const PickerQuantity = ({
+    quantity,
+    orderid,
+    orderdetailid,
+    quantityProduct,
+  }) => {
     const [country, setCountry] = useState(quantity);
     const [visible, setVisible] = useState(false);
     const [tempCountry, setTempCountry] = useState("Unknown");
@@ -145,7 +150,6 @@ const CartScreen = ({
       </View>
     );
   };
-
 
   // remove data from Cart
   const removeItemFromCart = async (orderdetailid, orderid) => {
@@ -281,9 +285,7 @@ const CartScreen = ({
       "Cảm ơn thí chủ đã mua hàng, ghé lại sớm nha! 😍"
     );
 
-    navigation.navigate("Tracking", {
-      statusInput: "pending",
-    });
+    navigation.navigate("Success");
   };
 
   const renderProduct = (data, index) => {
@@ -534,7 +536,6 @@ const CartScreen = ({
             </View>
 
             <View>
-              
               <View
                 style={{
                   paddingHorizontal: 16,
@@ -584,8 +585,8 @@ const CartScreen = ({
                   <Text
                     style={{
                       flex: 1,
-                    justifyContent: "flex-end",
-                      
+                      justifyContent: "flex-end",
+
                       fontSize: 14,
                       fontWeight: "500",
                       color: COLOURS.black,
@@ -593,12 +594,12 @@ const CartScreen = ({
                       marginLeft: 80,
                       // overflow: 'wrap',
                     }}
-                    numberOfLines={2} 
+                    numberOfLines={2}
                   >
                     {information.address}
                   </Text>
                 </View>
-                <Divider style={{marginVertical: 20}}/>
+                <Divider style={{ marginVertical: 20 }} />
                 <View
                   style={{
                     flexDirection: "row",
