@@ -72,8 +72,8 @@ const EditProfileScreen = ({
   };
 
   return (
-    <SafeAreaView edges={["left", "right", "top"]}>
-      <View style={styles.container}>
+    <SafeAreaView edges={["left", "right"]} style={styles.container}>
+      <View >
         <View style={styles.boxInput}>
           <MaterialIcons name="person" size={20} color="black" />
           <TextInput

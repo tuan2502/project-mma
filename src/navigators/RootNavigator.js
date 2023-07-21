@@ -95,8 +95,6 @@ const RootNavigator = () => {
           headerTitle: "Edit Profile",
         }}
       />
-      {/* </>
-      )}  */}
     </RootStack.Navigator>
   );
 };

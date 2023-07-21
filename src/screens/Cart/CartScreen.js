@@ -23,24 +23,31 @@ import Dialog from "react-native-dialog";
 import { Picker } from "@react-native-picker/picker";
 import { ToastMessage } from "../../components/CustomToastMessage";
 
-const CartScreen = ({
-  navigation,
-  route: {
-    params: { information },
-  },
-}) => {
+const CartScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [cartList, setCartList] = useState();
   const [isLoading, setLoading] = useState(true);
-  const [callCount, setCallCount] = useState(0);
+  const [information, setInformation] = useState(information);
 
   const [total, setTotal] = useState(null);
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getOrderList();
+      getInformation();
     });
     return unsubscribe;
   }, [navigation, cartList]);
+
+  const getInformation = async () => {
+    await get({ endpoint: "/customer/4f639884-3ecb-470b-a785-788c73" })
+      .then((response) => {
+        const data = response.data["data"];
+        setInformation(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   // lấy card order theo orderid
   const getOrderList = async () => {
