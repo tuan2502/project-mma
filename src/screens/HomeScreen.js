@@ -41,23 +41,25 @@ const HomeScreen = ({ navigation }) => {
       }, 1000);
 
       get({ endpoint: "/product/" })
-      .then((response) => {
-        const products = response.data["data"];
-        setProductData(products);
-        const randomIndexes = [];
-        while (randomIndexes.length < 3) {
-          const randomIndex = Math.floor(Math.random() * products.length);
-          if (!randomIndexes.includes(randomIndex)) {
-            randomIndexes.push(randomIndex);
+        .then((response) => {
+          const products = response.data["data"];
+          setProductData(products);
+          const randomIndexes = [];
+          while (randomIndexes.length < 3) {
+            const randomIndex = Math.floor(
+              Math.random() * (products.length - 8)
+            );
+            if (!randomIndexes.includes(randomIndex) && randomIndex >= 8) {
+              randomIndexes.push(randomIndex);
+            }
           }
-        }
-        const randomItems = randomIndexes.map((index) => products[index]);
-        setRandomItems(randomItems);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => setLoading(false));
+          const randomItems = randomIndexes.map((index) => products[index]);
+          setRandomItems(randomItems);
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => setLoading(false));
     });
     return unsubscribe;
   }, [navigation]);
@@ -305,8 +307,9 @@ const HomeScreen = ({ navigation }) => {
             <ActivityIndicator />
           ) : (
             <MasonryList
-              data={productData.slice(0, 7)}
+              data={productData.slice(0, 8)}
               numColumns={2}
+              style={{ marginBottom: 150 }}
               contentContainerStyle={{ paddingHorizontal: 12 }}
               showsVerticalScrollIndicator={false}
               renderItem={({ item, i }) => {
@@ -337,7 +340,13 @@ const HomeScreen = ({ navigation }) => {
                           ]}
                         >
                           <View
-                            style={{ flexDirection: "row", gap: 8, padding: 4 }}
+                            style={{
+                              flexDirection: "row",
+                              gap: 8,
+                              padding: 4,
+                              backgroundColor: "rgba(0,0,0,0.25)",
+                              borderRadius: 100,
+                            }}
                           >
                             <TouchableOpacity
                               style={{ flex: 1 }}
@@ -346,8 +355,9 @@ const HomeScreen = ({ navigation }) => {
                               }
                             >
                               <Text
+                                numberOfLines={1}
                                 style={{
-                                  flex: 1,
+                                  paddingTop: 5,
                                   fontSize: 16,
                                   fontWeight: "600",
                                   color: "#fff",

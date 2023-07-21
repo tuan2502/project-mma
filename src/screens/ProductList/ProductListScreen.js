@@ -42,24 +42,24 @@ const ProductsList = ({ navigation }) => {
     const unsubscribe = navigation.addListener("focus", () => {
       getOrder();
       get({ endpoint: "/product/" })
-      .then((response) => {
-        const products = response.data["data"];
-        setProductData(products);
-        setFilteredProductData(products);
-        const randomIndexes = [];
-        while (randomIndexes.length < 3) {
-          const randomIndex = Math.floor(Math.random() * products.length);
-          if (!randomIndexes.includes(randomIndex)) {
-            randomIndexes.push(randomIndex);
+        .then((response) => {
+          const products = response.data["data"];
+          setProductData(products);
+          setFilteredProductData(products);
+          const randomIndexes = [];
+          while (randomIndexes.length < 3) {
+            const randomIndex = Math.floor(Math.random() * products.length);
+            if (!randomIndexes.includes(randomIndex)) {
+              randomIndexes.push(randomIndex);
+            }
           }
-        }
-        const randomItems = randomIndexes.map((index) => products[index]);
-        setRandomItems(randomItems);
-      })
-      .catch((error) => {
-        console.log("3", error);
-      })
-      .finally(() => setLoading(false));
+          const randomItems = randomIndexes.map((index) => products[index]);
+          setRandomItems(randomItems);
+        })
+        .catch((error) => {
+          console.log("3", error);
+        })
+        .finally(() => setLoading(false));
     });
     return unsubscribe;
   }, [navigation]);
@@ -336,6 +336,7 @@ const ProductsList = ({ navigation }) => {
             <ActivityIndicator />
           ) : (
             <MasonryList
+              style={{ marginBottom: 180 }}
               data={filteredProductData}
               numColumns={2}
               contentContainerStyle={{ paddingHorizontal: 12 }}
@@ -368,7 +369,13 @@ const ProductsList = ({ navigation }) => {
                           ]}
                         >
                           <View
-                            style={{ flexDirection: "row", gap: 8, padding: 4 }}
+                            style={{
+                              flexDirection: "row",
+                              gap: 8,
+                              padding: 4,
+                              backgroundColor: "rgba(0,0,0,0.25)",
+                              borderRadius: 100,
+                            }}
                           >
                             <TouchableOpacity
                               style={{ flex: 1 }}
@@ -377,8 +384,9 @@ const ProductsList = ({ navigation }) => {
                               }
                             >
                               <Text
+                                numberOfLines={1}
                                 style={{
-                                  flex: 1,
+                                  paddingTop: 5,
                                   fontSize: 16,
                                   fontWeight: "600",
                                   color: "#fff",
