@@ -75,8 +75,8 @@ const EditProfileScreen = ({
   };
 
   return (
-    <SafeAreaView edges={["left", "right", "top"]}>
-      <View style={styles.container}>
+    <SafeAreaView edges={["left", "right"]} style={styles.container}>
+      <View >
         <View style={styles.boxInput}>
           <MaterialIcons name="person" size={20} color="black" />
           <TextInput
@@ -106,7 +106,6 @@ const EditProfileScreen = ({
               }
             }}
             clearButtonMode="while-editing"
-
           />
         </View>
         <View style={styles.boxInput}>
@@ -118,7 +117,6 @@ const EditProfileScreen = ({
             value={phone}
             onChangeText={setPhone}
             clearButtonMode="while-editing"
-
           />
         </View>
         <View style={styles.boxInput}>
@@ -130,10 +128,11 @@ const EditProfileScreen = ({
             value={address}
             onChangeText={setAddress}
             clearButtonMode="while-editing"
-
           />
         </View>
-        <Button title="Save" onPress={handleSave} />
+        <View style={styles.buttonUpdate}>
+          <Button color="white" title="Update" onPress={handleSave} />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -142,19 +141,32 @@ const EditProfileScreen = ({
 export default EditProfileScreen;
 
 const styles = StyleSheet.create({
-    container: {
-        marginHorizontal: 20,
-    },
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    marginHorizontal: 20,
+  },
 
-    boxInput: {
-      flexDirection: 'row',
-      height: 40,
-      borderBottomColor: 'gray',
-      borderBottomWidth: 1,
-      margin: 10,
-      padding: 10,
-    },
+  boxInput: {
+    flexDirection: "row",
+    height: 40,
+    borderBottomColor: "gray",
+    borderBottomWidth: 1,
+    margin: 10,
+    padding: 10,
+  },
 
-    textInput:{marginLeft: 10,width: '90%'}
+  textInput: { marginLeft: 10, width: "90%" },
 
+  buttonUpdate: {
+    backgroundColor: "#000",
+    color: "white",
+    marginTop: 20,
+    marginHorizontal: '35%',
+    fontWeight: 500,
+    padding: 10,
+    borderRadius: 10,
+  },
 });

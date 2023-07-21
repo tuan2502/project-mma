@@ -23,24 +23,31 @@ import Dialog from "react-native-dialog";
 import { Picker } from "@react-native-picker/picker";
 import { ToastMessage } from "../../components/CustomToastMessage";
 
-const CartScreen = ({
-  navigation,
-  route: {
-    params: { information },
-  },
-}) => {
+const CartScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [cartList, setCartList] = useState();
   const [isLoading, setLoading] = useState(true);
-  const [callCount, setCallCount] = useState(0);
+  const [information, setInformation] = useState(information);
 
   const [total, setTotal] = useState(null);
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       getOrderList();
+      getInformation();
     });
     return unsubscribe;
   }, [navigation, cartList]);
+
+  const getInformation = async () => {
+    await get({ endpoint: "/customer/4f639884-3ecb-470b-a785-788c73" })
+      .then((response) => {
+        const data = response.data["data"];
+        setInformation(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   // lấy card order theo orderid
   const getOrderList = async () => {
@@ -66,13 +73,18 @@ const CartScreen = ({
       .finally(() => setLoading(false));
   };
 
-  //giới hạn số lượng 
-  const limitQuantity = () =>{
+  //giới hạn số lượng
+  const limitQuantity = () => {
     // productData.filter(item =>item.)
-  }
+  };
 
   //picker quantity
-  const PickerQuantity = ({ quantity, orderid, orderdetailid, quantityProduct }) => {
+  const PickerQuantity = ({
+    quantity,
+    orderid,
+    orderdetailid,
+    quantityProduct,
+  }) => {
     const [country, setCountry] = useState(quantity);
     const [visible, setVisible] = useState(false);
     const [tempCountry, setTempCountry] = useState("Unknown");
@@ -145,7 +157,6 @@ const CartScreen = ({
       </View>
     );
   };
-
 
   // remove data from Cart
   const removeItemFromCart = async (orderdetailid, orderid) => {
@@ -534,7 +545,6 @@ const CartScreen = ({
             </View>
 
             <View>
-              
               <View
                 style={{
                   paddingHorizontal: 16,
@@ -584,8 +594,8 @@ const CartScreen = ({
                   <Text
                     style={{
                       flex: 1,
-                    justifyContent: "flex-end",
-                      
+                      justifyContent: "flex-end",
+
                       fontSize: 14,
                       fontWeight: "500",
                       color: COLOURS.black,
@@ -593,12 +603,12 @@ const CartScreen = ({
                       marginLeft: 80,
                       // overflow: 'wrap',
                     }}
-                    numberOfLines={2} 
+                    numberOfLines={2}
                   >
                     {information.address}
                   </Text>
                 </View>
-                <Divider style={{marginVertical: 20}}/>
+                <Divider style={{ marginVertical: 20 }} />
                 <View
                   style={{
                     flexDirection: "row",
