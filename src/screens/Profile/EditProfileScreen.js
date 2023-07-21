@@ -13,19 +13,14 @@ const EditProfileScreen = ({
     params: { information },
   },
 }) => {
-
   const [name, setName] = useState(information.name);
   const [email, setEmail] = useState(information.email);
   const [phone, setPhone] = useState(information.phone);
   const [address, setAddress] = useState(information.address);
 
   const handleSave = () => {
-    if(!name || !email || !phone || !address){
-      ToastMessage(
-        "error",
-        "Invalid input",
-        "Please enter a valid input!"
-      );
+    if (!name || !email || !phone || !address) {
+      ToastMessage("error", "Invalid input", "Please enter a valid input!");
       setName(information.name);
       setEmail(information.email);
       setPhone(information.phone);
@@ -41,11 +36,9 @@ const EditProfileScreen = ({
       return;
     }
     PutProfile(name, email, phone, address);
-    
   };
 
   const PutProfile = async (newName, newEmail, newPhone, newAddress) => {
-    
     const uid = "4f639884-3ecb-470b-a785-788c73";
     await put({
       endpoint: `/customer/${uid}`,
@@ -59,8 +52,12 @@ const EditProfileScreen = ({
     })
       .then((response) => {
         const data = response.data["data"];
-        ToastMessage('info','Update Information', 'Profile Updated Successfully!')
-        navigation.navigate('Profile')
+        ToastMessage(
+          "info",
+          "Update Information",
+          "Profile Updated Successfully!"
+        );
+        navigation.navigate("Profile");
         return data;
       })
       .catch((error) => {
@@ -142,10 +139,6 @@ export default EditProfileScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column',
-    // justifyContent: 'center',
-    // alignItems: 'center',
     marginHorizontal: 20,
   },
 
@@ -159,14 +152,12 @@ const styles = StyleSheet.create({
   },
 
   textInput: { marginLeft: 10, width: "90%" },
-
   buttonUpdate: {
     backgroundColor: "#000",
     color: "white",
     marginTop: 20,
-    marginHorizontal: '35%',
+    marginHorizontal: "35%",
     fontWeight: 500,
-    padding: 10,
     borderRadius: 10,
   },
 });

@@ -17,7 +17,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { SafeAreaView } from "react-native-safe-area-context";
 import { get, put, post, remove } from "../../utils/APICaller";
 import { formatCurrency } from "../../components/Format";
-import { Divider } from 'react-native-elements';
+import { Divider } from "react-native-elements";
 
 import Dialog from "react-native-dialog";
 import { Picker } from "@react-native-picker/picker";
@@ -292,9 +292,7 @@ const CartScreen = ({ navigation }) => {
       "Cảm ơn thí chủ đã mua hàng, ghé lại sớm nha! 😍"
     );
 
-    navigation.navigate("Tracking", {
-      statusInput: "pending",
-    });
+    navigation.navigate("Success");
   };
 
   const renderProduct = (data, index) => {

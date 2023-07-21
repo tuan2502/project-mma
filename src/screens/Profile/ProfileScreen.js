@@ -70,7 +70,6 @@ const ProfileScreen = ({ navigation }) => {
                   zIndex: 2,
                 }}
               />
-
             </View>
             <View style={{ marginTop: 60 }}>
               <Text
@@ -84,21 +83,23 @@ const ProfileScreen = ({ navigation }) => {
                 {information.name}
               </Text>
               <TouchableOpacity
-                onPress={() => {navigation.navigate('EditProfile', {information})}}
+                onPress={() => {
+                  navigation.navigate("EditProfile", { information });
+                }}
                 style={{
                   flex: 1,
                   justifyContent: "center",
                   alignItems: "center",
                   position: "absolute",
-                  right: '25%',
+                  right: "25%",
                   zIndex: 99,
                   backgroundColor: "#000",
-                  width: 30,
-                  height: 30,
+                  width: 25,
+                  height: 25,
                   borderRadius: 30,
                 }}
               >
-                <MaterialIcons name="edit" size={20} color="white" />
+                <MaterialIcons name="edit" size={16} color="white" />
               </TouchableOpacity>
               <Text style={{ textAlign: "center", color: "#00000099" }}>
                 #{information.username}
@@ -204,7 +205,7 @@ const ProfileScreen = ({ navigation }) => {
                   paddingLeft: 40,
                 }}
               >
-                Tracking your oder:
+                Tracking your orders:
               </Text>
             </View>
             <View
