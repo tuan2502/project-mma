@@ -209,10 +209,18 @@ const DetailsScreen = ({ navigation, route }) => {
                   textTransform: "uppercase",
                 }}
               >
-                Dòng sản phẩm :
-              </Text>
-              <Text style={{ color: colors.text, opacity: 0.5 }}>
-                {route.params.Category.catename}
+                Category:{" "}
+                <Text
+                  style={{
+                    color: colors.text,
+                    opacity: 0.5,
+                    fontSize: 16,
+                    fontWeight: "400",
+                    textTransform: "none",
+                  }}
+                >
+                  {route.params.Category.catename}
+                </Text>
               </Text>
             </View>
           </View>
@@ -226,7 +234,7 @@ const DetailsScreen = ({ navigation, route }) => {
                 color: colors.text,
               }}
             >
-              Mô tả
+              Decscription
             </Text>
             <Text
               style={{ color: colors.text, opacity: 0.75 }}
