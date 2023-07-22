@@ -371,11 +371,13 @@ const ProductsList = ({ navigation }) => {
                           <View
                             style={{
                               flexDirection: "row",
-                              gap: 8,
-                              padding: 4,
-                              backgroundColor: "rgba(0,0,0,0.25)",
+                              backgroundColor: "rgba(0,0,0,0.5)",
+                              alignItems: "center",
+                              padding: 6,
                               borderRadius: 100,
+                              overflow: "hidden",
                             }}
+                            intensity={20}
                           >
                             <TouchableOpacity
                               style={{ flex: 1 }}
@@ -386,7 +388,7 @@ const ProductsList = ({ navigation }) => {
                               <Text
                                 numberOfLines={1}
                                 style={{
-                                  paddingTop: 5,
+                                  paddingLeft: 5,
                                   fontSize: 16,
                                   fontWeight: "600",
                                   color: "#fff",
@@ -401,7 +403,7 @@ const ProductsList = ({ navigation }) => {
                                 {item.name}
                               </Text>
                             </TouchableOpacity>
-                            <View
+                            {/* <View
                               style={{
                                 backgroundColor: colors.card,
                                 borderRadius: 100,
@@ -416,10 +418,10 @@ const ProductsList = ({ navigation }) => {
                                 size={20}
                                 color={colors.text}
                               />
-                            </View>
+                            </View> */}
                           </View>
                           <View style={{ flex: 1 }} />
-                          <BlurView
+                          <View
                             style={{
                               flexDirection: "row",
                               backgroundColor: "rgba(0,0,0,0.5)",
@@ -459,7 +461,7 @@ const ProductsList = ({ navigation }) => {
                                 color="#000"
                               />
                             </TouchableOpacity>
-                          </BlurView>
+                          </View>
                         </View>
                       </View>
                     </View>

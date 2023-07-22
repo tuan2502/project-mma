@@ -86,7 +86,7 @@ const DetailsScreen = ({ navigation, route }) => {
           >
             <Icons name="arrow-back" size={24} color={"#000"} />
           </TouchableOpacity>
-          <View style={{ flex: 1 }} />
+          {/* <View style={{ flex: 1 }} />
           <TouchableOpacity
             style={{
               width: 52,
@@ -99,7 +99,7 @@ const DetailsScreen = ({ navigation, route }) => {
             }}
           >
             <Icons name="favorite-border" size={24} color={"#000"} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </SafeAreaView>
 
